@@ -5,7 +5,7 @@ struct ContentView: View {
     init() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
-        tabBarAppearance.backgroundColor = UIColor(white: 0.4, alpha: 0.1) // Semi-transparent gray color
+        tabBarAppearance.backgroundColor = UIColor(white: 0.4, alpha: 0.4) // Semi-transparent gray color
         
         UITabBar.appearance().standardAppearance = tabBarAppearance
         if #available(iOS 15.0, *) {
@@ -36,7 +36,7 @@ struct ContentView: View {
                         Text("Settings")
                     }
             }
-            .accentColor(.purple)
+            .accentColor(.white)
         }
     }
 }

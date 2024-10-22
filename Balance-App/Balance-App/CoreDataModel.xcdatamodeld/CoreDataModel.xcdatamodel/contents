@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="CustomGoalsEntity" representedClassName="CustomGoalsEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="isCustomGoalTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="FitnessEntity" representedClassName="FitnessEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="caloriesBurned" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="caloriesGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isCaloriesTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isStepsTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isStretchingTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWaterTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWorkoutTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="stepsGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stepsWalked" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterConsumed" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="workoutDuration" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="isMeditationTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isOutdoorTimeTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="meditationDuration" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="meditationGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="outdoorGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="outdoorMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+</model>
