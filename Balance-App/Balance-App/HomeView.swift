@@ -4,8 +4,11 @@ struct HomeView: View {
     // core data
    // implement core data tonight
     // then setup onboarding
-     
+    init(){
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor : UIColor.white]
+    }
     var body: some View {
+
         
         NavigationView {
             ZStack {

@@ -14,6 +14,9 @@ struct FitnessDetailView: View {
                     .font(.largeTitle)
                     .bold()
                     .padding(.top)
+                    .foregroundColor(.white)
+                    .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+                
                 
                 // Progress Summary
                 VStack(alignment: .leading, spacing: 15) {
@@ -48,6 +51,8 @@ struct FitnessDetailView: View {
                     Text("Goals")
                         .font(.title2)
                         .bold()
+                        .foregroundColor(.white)
+                        .shadow(color: .black, radius: 0.1, x: 0, y: 1)
                     
                     GoalRow(goalTitle: "Daily Steps", progress: "2,000 steps", goal: "5,000 steps")
                     GoalRow(goalTitle: "Drink Water", progress: "1 gallon", goal: "4 gallons")

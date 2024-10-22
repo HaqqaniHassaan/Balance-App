@@ -9,12 +9,15 @@ import SwiftUI
 
 @main
 struct Balance_AppApp: App {
-    // Initialize the CoreDataViewModel
     @StateObject private var coreDataViewModel = CoreDataViewModel()
 
     var body: some Scene {
         WindowGroup {
-            OnboardingWelcomeView(coreDataViewModel: coreDataViewModel)
+            if coreDataViewModel.isOnboardingCompleted() {
+                ContentView() // Main content view
+            } else {
+                OnboardingWelcomeView(coreDataViewModel: coreDataViewModel) // Onboarding flow
+            }
         }
     }
 }
