@@ -5,17 +5,17 @@ struct HomeView: View {
         NavigationView {
             VStack(spacing: 20) {
                 // Physical Health Widget
-                NavigationLink(destination: FitnessOverviewView()) {
+                NavigationLink(destination: FitnessDetailView()) {
                     WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
                 }
 
                 // Mental Wellbeing Widget
-                NavigationLink(destination: MentalHealthOverviewView()) {
+                NavigationLink(destination: MentalHealthDetailView()) {
                     WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
                 }
 
                 // Custom Goals Widget
-                NavigationLink(destination: CustomGoalsOverviewView()) {
+                NavigationLink(destination: CustomGoalsDetailView()) {
                     WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
                 }
                 
@@ -27,32 +27,9 @@ struct HomeView: View {
     }
 }
 
-// Placeholder for FitnessOverviewView
-struct FitnessOverviewView: View {
-    var body: some View {
-        Text("Fitness Overview Placeholder")
-            .font(.largeTitle)
-            .padding()
-    }
-}
 
-// Placeholder for MentalHealthOverviewView
-struct MentalHealthOverviewView: View {
-    var body: some View {
-        Text("Mental Health Overview Placeholder")
-            .font(.largeTitle)
-            .padding()
-    }
-}
 
-// Placeholder for CustomGoalsOverviewView
-struct CustomGoalsOverviewView: View {
-    var body: some View {
-        Text("Custom Goals Overview Placeholder")
-            .font(.largeTitle)
-            .padding()
-    }
-}
+
 
 // Reusable widget component
 struct WidgetView: View {
