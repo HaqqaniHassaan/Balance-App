@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="CustomGoalsEntity" representedClassName="CustomGoalsEntity" syncable="YES" codeGenerationType="class">
         <attribute name="isCustomGoalTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isOnboardingComplete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
     </entity>
     <entity name="FitnessEntity" representedClassName="FitnessEntity" syncable="YES" codeGenerationType="class">
         <attribute name="caloriesBurned" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
