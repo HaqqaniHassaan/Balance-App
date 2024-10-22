@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    init() {
+    // Accept the shared instance of CoreDataViewModel
+    @ObservedObject var coreDataViewModel: CoreDataViewModel
+
+    init(coreDataViewModel: CoreDataViewModel) {
+        self.coreDataViewModel = coreDataViewModel
+        
+        // Configure the tab bar appearance
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
         tabBarAppearance.backgroundColor = UIColor(white: 0.4, alpha: 0.4) // Semi-transparent gray color
@@ -12,25 +17,25 @@ struct ContentView: View {
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         }
     }
-    
+
     var body: some View {
         ZStack {
             // Your background image or color here
-            
+
             TabView {
-                HomeView()
+                HomeView(coreDataViewModel: coreDataViewModel)
                     .tabItem {
                         Image(systemName: "house.fill")
                         Text("Home")
                     }
                 
-                ProgressViewTab()
+                ProgressViewTab(coreDataViewModel: coreDataViewModel)
                     .tabItem {
                         Image(systemName: "chart.bar.fill")
                         Text("Progress")
                     }
                 
-                SettingsView()
+                SettingsView(coreDataViewModel: coreDataViewModel)
                     .tabItem {
                         Image(systemName: "gearshape.fill")
                         Text("Settings")
@@ -42,5 +47,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(coreDataViewModel: CoreDataViewModel())
 }

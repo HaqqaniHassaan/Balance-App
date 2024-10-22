@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @ObservedObject var coreDataViewModel: CoreDataViewModel
+
     var body: some View {
         ZStack {
             
@@ -41,6 +43,4 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsView()
-}
+
