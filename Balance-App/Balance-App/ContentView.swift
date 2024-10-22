@@ -1,38 +1,45 @@
-//
-//  ContentView.swift
-//  Balance-App
-//
-//  Created by user264048 on 10/21/24.
-//
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        TabView {
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
-            
-            ProgressViewTab()
-                .tabItem {
-                    Image(systemName: "chart.bar.fill")
-                    Text("Progress")
-                }
-            
-            SettingsView()
-                .tabItem {
-                    Image(systemName: "gearshape.fill")
-                    Text("Settings")
-                }
+    
+    init() {
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(white: 0.4, alpha: 0.1) // Semi-transparent gray color
+        
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         }
-        .accentColor(.purple) 
+    }
+    
+    var body: some View {
+        ZStack {
+            // Your background image or color here
+            
+            TabView {
+                HomeView()
+                    .tabItem {
+                        Image(systemName: "house.fill")
+                        Text("Home")
+                    }
+                
+                ProgressViewTab()
+                    .tabItem {
+                        Image(systemName: "chart.bar.fill")
+                        Text("Progress")
+                    }
+                
+                SettingsView()
+                    .tabItem {
+                        Image(systemName: "gearshape.fill")
+                        Text("Settings")
+                    }
+            }
+            .accentColor(.purple)
+        }
     }
 }
-
-
-
 
 #Preview {
     ContentView()

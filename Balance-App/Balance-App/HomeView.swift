@@ -1,28 +1,41 @@
 import SwiftUI
 
 struct HomeView: View {
+    // core data
+   // implement core data tonight
+    // then setup onboarding
+     
     var body: some View {
+        
         NavigationView {
-            VStack(spacing: 20) {
-                // Physical Health Widget
-                NavigationLink(destination: FitnessDetailView()) {
-                    WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
+            ZStack {
+                Image("background_image")
+                     .resizable()
+                     .scaledToFill()
+                     .frame(minWidth: 0) // 👈 This will keep other views (like a large text) in the frame
+                     .ignoresSafeArea()
+                VStack(spacing: 20) {
+                    // Physical Health Widget
+                    NavigationLink(destination: FitnessDetailView()) {
+                        WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
+                    }
+                    
+                    // Mental Wellbeing Widget
+                    NavigationLink(destination: MentalHealthDetailView()) {
+                        WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
+                    }
+                    
+                    // Custom Goals Widget
+                    NavigationLink(destination: CustomGoalsDetailView()) {
+                        WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
+                    }
+                    
+                    Spacer()
                 }
-
-                // Mental Wellbeing Widget
-                NavigationLink(destination: MentalHealthDetailView()) {
-                    WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
-                }
-
-                // Custom Goals Widget
-                NavigationLink(destination: CustomGoalsDetailView()) {
-                    WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
-                }
+                .padding()
+                .navigationTitle("Balance")
                 
-                Spacer()
             }
-            .padding()
-            .navigationTitle("Balance")
         }
     }
 }
