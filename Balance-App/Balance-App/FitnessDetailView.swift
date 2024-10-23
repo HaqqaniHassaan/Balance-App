@@ -4,10 +4,16 @@ struct FitnessDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
     @State private var stepsWalked: Int = 0
     @State private var caloriesBurned: Int = 0
+    @State private var exerciseMinutes: Int = 0
+    @State private var waterIntake: Int = 0
+    @State private var stretchingMinutes: Int = 0
 
     // Placeholder goals
     private let stepGoal = 10000
     private let calorieGoal = 600
+    private let exerciseGoal = 30
+    private let waterGoal = 4 // 4 gallons
+    private let stretchingGoal = 15 // 15 minutes
 
     var body: some View {
         ZStack {
@@ -28,42 +34,37 @@ struct FitnessDetailView: View {
 
                 // Progress Summary
                 VStack(alignment: .leading, spacing: 15) {
-                    // Conditional Widgets
+                    // Steps tracking
                     if coreDataViewModel.fitnessEntity?.isStepsTracked == true {
                         HStack {
                             ProgressView("Daily Steps", value: Double(stepsWalked), total: Double(stepGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .blue))
                             Text("\(stepsWalked)/\(stepGoal) steps")
                                 .font(.caption)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                     }
-                    
+
+                    // Calories tracking
                     if coreDataViewModel.fitnessEntity?.isCaloriesTracked == true {
                         HStack {
-                            ProgressView("Move", value: Double(caloriesBurned), total: Double(calorieGoal))
+                            ProgressView("Calories Burned", value: Double(caloriesBurned), total: Double(calorieGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .red))
                             Text("\(caloriesBurned)/\(calorieGoal) CAL")
                                 .font(.caption)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                     }
-                    
-                    // Placeholder for Exercise and Stand
-                    HStack {
-                        ProgressView("Exercise", value: 15, total: 30)
-                            .progressViewStyle(LinearProgressViewStyle(tint: .orange))
-                        Text("15/30 MIN")
-                            .font(.caption)
-                            .foregroundColor(.white)
-                    }
-                    
-                    HStack {
-                        ProgressView("Stand", value: 5, total: 12)
-                            .progressViewStyle(LinearProgressViewStyle(tint: .green))
-                        Text("5/12 HRS")
-                            .font(.caption)
-                            .foregroundColor(.white)
+
+                    // Exercise tracking
+                    if coreDataViewModel.fitnessEntity?.isWorkoutTracked == true {
+                        HStack {
+                            ProgressView("Exercise Time", value: Double(exerciseMinutes), total: Double(exerciseGoal))
+                                .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                            Text("\(exerciseMinutes)/\(exerciseGoal) MIN")
+                                .font(.caption)
+                                .foregroundColor(.black)
+                        }
                     }
                 }
                 .padding()
@@ -78,13 +79,13 @@ struct FitnessDetailView: View {
                         .bold()
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: 0.1, x: 0, y: 1)
-                    
-                    if coreDataViewModel.fitnessEntity?.isStepsTracked == true {
-                        GoalRow(goalTitle: "Daily Steps", progress: "\(stepsWalked) steps", goal: "\(stepGoal) steps")
+
+                    if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
+                        GoalRow(goalTitle: "Water Intake", progress: "\(waterIntake) gallons", goal: "\(waterGoal) gallons")
                     }
 
-                    if coreDataViewModel.fitnessEntity?.isCaloriesTracked == true {
-                        GoalRow(goalTitle: "Calories Burned", progress: "\(caloriesBurned) kcal", goal: "\(calorieGoal) kcal")
+                    if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
+                        GoalRow(goalTitle: "Stretching", progress: "\(stretchingMinutes) min", goal: "\(stretchingGoal) min")
                     }
                 }
                 .padding()
@@ -122,6 +123,17 @@ struct FitnessDetailView: View {
                 }
             }
         }
+
+        // Fetch exercise time
+        HealthKitManager.shared.fetchExerciseTime { exerciseTime, error in
+            DispatchQueue.main.async {
+                if let exerciseTime = exerciseTime {
+                    self.exerciseMinutes = Int(exerciseTime)
+                } else {
+                    print("Error fetching exercise time: \(String(describing: error))")
+                }
+            }
+        }
     }
 }
 
@@ -136,7 +148,7 @@ struct GoalRow: View {
             VStack(alignment: .leading) {
                 Text(goalTitle)
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                 Text("\(progress) / \(goal)")
                     .font(.caption)
                     .foregroundColor(.gray)

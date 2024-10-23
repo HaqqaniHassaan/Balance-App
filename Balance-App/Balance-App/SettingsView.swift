@@ -43,4 +43,6 @@ struct SettingsView: View {
     }
 }
 
-
+#Preview {
+    SettingsView(coreDataViewModel: CoreDataViewModel())
+}
