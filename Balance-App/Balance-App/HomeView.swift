@@ -11,6 +11,7 @@ struct HomeView: View {
      */
     
     var body: some View {
+        
         NavigationView {
             ZStack {
                 // Background image
@@ -40,11 +41,13 @@ struct HomeView: View {
                 }
                 .padding()
                 .navigationTitle("Balance")
-                .onAppear {
-                    // Set navigation bar appearance when the view appears
-                    UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-                }
+                
+
             }
+        }
+        .onAppear {
+            // Set navigation bar appearance when the view appears
+            UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         }
     }
 }

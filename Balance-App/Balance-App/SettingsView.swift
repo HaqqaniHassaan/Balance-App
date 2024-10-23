@@ -21,15 +21,20 @@ struct SettingsView: View {
                     Section(header: Text("General")) {
                         Button(action: {}) {
                             Text("Clear History")
+                                .foregroundColor(.blue)
                         }
                         Button(action: {}) {
                             Text("Goal Preferences")
+                                .foregroundColor(.blue)
+
                         }
                     }
                     
                     Section(header: Text("About")) {
                         Button(action: {}) {
                             Text("Privacy Policy")
+                                .foregroundColor(.blue)
+
                         }
                         Button(action: {}) {
                             Text("Reset All Data")
@@ -38,6 +43,10 @@ struct SettingsView: View {
                     }
                 }
                 .navigationTitle("Settings")
+            }
+            .onAppear {
+                // Set navigation bar appearance when the view appears
+                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
             }
         }
     }

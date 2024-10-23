@@ -16,6 +16,8 @@ struct ContentView: View {
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         }
+            // Update UINavigationBar appearance for large titles
+        
     }
 
     var body: some View {
