@@ -109,8 +109,9 @@ struct MentalHealthDetailView: View {
 }
 
 // Preview for MentalHealthDetailView
-struct MentalHealthDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        MentalHealthDetailView(coreDataViewModel: CoreDataViewModel())
-    }
+
+
+#Preview {
+    MentalHealthDetailView(coreDataViewModel: CoreDataViewModel())
+
 }

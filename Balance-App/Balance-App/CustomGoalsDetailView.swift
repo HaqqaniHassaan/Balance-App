@@ -124,8 +124,9 @@ struct CustomGoalsDetailView: View {
 }
 
 // Preview for CustomGoalsDetailView
-struct CustomGoalsDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        CustomGoalsDetailView(coreDataViewModel: CoreDataViewModel())
-    }
+
+
+#Preview {
+    CustomGoalsDetailView(coreDataViewModel: CoreDataViewModel())
+
 }

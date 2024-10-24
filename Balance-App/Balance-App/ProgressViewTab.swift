@@ -3,6 +3,7 @@ import SwiftUI
 struct ProgressViewTab: View {
     // Inject the CoreDataViewModel instance as an observed object
     @ObservedObject var coreDataViewModel: CoreDataViewModel
+    @Environment(\.verticalSizeClass) var verticalSizeClass // Detect orientation
 
     var body: some View {
         NavigationView {
@@ -14,32 +15,59 @@ struct ProgressViewTab: View {
                     .frame(minWidth: 0)
                     .ignoresSafeArea()
 
+                // Use different layouts based on orientation
                 VStack {
                     // Title
-                    Text("Your Progress So Far...")
-                        .font(.title)
-                        .foregroundColor(.white)
-                        .bold()
-                        .shadow(color: .black, radius: 0.1, x: 0, y: 2)
-                        .padding()
 
-                    // Calendar Placeholder
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
-                        ForEach(1...30, id: \.self) { day in
-                            ZStack {
-                                Circle()
-                                    .fill(isProgressDay(day) ? Color.green : Color.gray.opacity(0.3))
-                                    .frame(width: 40, height: 40)
 
-                                Text("\(day)")
-                                    .font(.caption)
-                                    .foregroundColor(.white)
+                    if verticalSizeClass == .regular {
+                        Text("Your Progress So Far...")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .bold()
+                            .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+                            .padding()
+                        // Portrait Mode
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
+                            ForEach(1...30, id: \.self) { day in
+                                ZStack {
+                                    Circle()
+                                        .fill(isProgressDay(day) ? Color.green : Color.gray.opacity(0.3))
+                                        .frame(width: 40, height: 40)
+
+                                    Text("\(day)")
+                                        .font(.caption)
+                                        .foregroundColor(.white)
+                                }
                             }
                         }
-                    }
-                    .padding()
+                        Spacer()
+                        .padding()
+                    } else {
+                        Spacer()
+                        Text("Your Progress So Far...")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .bold()
+                            .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+                            .padding()
+                        // Landscape Mode
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 10), spacing: 10) {
+                            ForEach(1...30, id: \.self) { day in
+                                ZStack {
+                                    Circle()
+                                        .fill(isProgressDay(day) ? Color.green : Color.gray.opacity(0.3))
+                                        .frame(width: 30, height: 30) // Smaller circles in landscape
 
-                    Spacer()
+                                    Text("\(day)")
+                                        .font(.caption2) // Smaller text in landscape
+                                        .foregroundColor(.white)
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
+
                 }
                 .padding()
             }
@@ -55,8 +83,6 @@ struct ProgressViewTab: View {
 }
 
 // Preview for ProgressViewTab
-struct ProgressViewTab_Previews: PreviewProvider {
-    static var previews: some View {
-        ProgressViewTab(coreDataViewModel: CoreDataViewModel())
-    }
+#Preview{
+    ProgressViewTab(coreDataViewModel: CoreDataViewModel())
 }

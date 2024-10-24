@@ -3,15 +3,9 @@ import SwiftUI
 struct HomeView: View {
     // Inject the CoreDataViewModel instance as an observed object
     @ObservedObject var coreDataViewModel: CoreDataViewModel
-    /*
-    init() {
-        // Update UINavigationBar appearance for large titles
-        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor : UIColor.white]
-    }
-     */
-    
+    @Environment(\.verticalSizeClass) var verticalSizeClass // Detect orientation
+
     var body: some View {
-        
         NavigationView {
             ZStack {
                 // Background image
@@ -21,29 +15,53 @@ struct HomeView: View {
                     .frame(minWidth: 0)
                     .ignoresSafeArea()
 
-                VStack(spacing: 20) {
-                    // Physical Health Widget
-                    NavigationLink(destination: FitnessDetailView(coreDataViewModel: coreDataViewModel)) {
-                        WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
-                    }
-                    
-                    // Mental Wellbeing Widget
-                    NavigationLink(destination: MentalHealthDetailView(coreDataViewModel: coreDataViewModel)) {
-                        WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
-                    }
-                    
-                    // Custom Goals Widget
-                    NavigationLink(destination: CustomGoalsDetailView(coreDataViewModel: coreDataViewModel)) {
-                        WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
-                    }
-                    
-                    Spacer()
-                }
-                .padding()
-                .navigationTitle("Balance")
-                
+                // Use different layouts based on orientation
+                if verticalSizeClass == .regular {
+                    // Portrait Mode
+                    VStack(spacing: 20) {
+                        // Physical Health Widget
+                        NavigationLink(destination: FitnessDetailView(coreDataViewModel: coreDataViewModel)) {
+                            WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
+                        }
 
+                        // Mental Wellbeing Widget
+                        NavigationLink(destination: MentalHealthDetailView(coreDataViewModel: coreDataViewModel)) {
+                            WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
+                        }
+
+                        // Custom Goals Widget
+                        NavigationLink(destination: CustomGoalsDetailView(coreDataViewModel: coreDataViewModel)) {
+                            WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
+                        }
+
+                        Spacer()
+                    }
+                    .padding()
+                } else {
+                    // Landscape Mode
+                    HStack(spacing: 20) {
+                        // Physical Health Widget
+                        NavigationLink(destination: FitnessDetailView(coreDataViewModel: coreDataViewModel)) {
+                            WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
+                                .frame(minWidth: 200)
+                        }
+
+                        // Mental Wellbeing Widget
+                        NavigationLink(destination: MentalHealthDetailView(coreDataViewModel: coreDataViewModel)) {
+                            WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
+                                .frame(minWidth: 200)
+                        }
+
+                        // Custom Goals Widget
+                        NavigationLink(destination: CustomGoalsDetailView(coreDataViewModel: coreDataViewModel)) {
+                            WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
+                                .frame(minWidth: 200)
+                        }
+                    }
+                    .padding()
+                }
             }
+            .navigationTitle("Balance")
         }
         .onAppear {
             // Set navigation bar appearance when the view appears
@@ -65,12 +83,12 @@ struct WidgetView: View {
                 .frame(width: 50, height: 50)
                 .foregroundColor(.white)
                 .padding()
-            
+
             Text(title)
                 .font(.headline)
                 .foregroundColor(.white)
                 .padding()
-            
+
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: 100)
@@ -79,4 +97,3 @@ struct WidgetView: View {
         .shadow(radius: 5)
     }
 }
-

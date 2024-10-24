@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FitnessDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
+    @Environment(\.verticalSizeClass) var verticalSizeClass // Detect orientation
 
     // Bind water intake and stretching minutes to Core Data
     @State private var waterIntake: Int = 0
@@ -27,101 +28,140 @@ struct FitnessDetailView: View {
                 .frame(minWidth: 0)
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                // Title
-                Text("Today's Fitness")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.top)
-                    .foregroundColor(.white)
-                    .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+            if verticalSizeClass == .regular {
+                // Portrait Mode
+                VStack(spacing: 20) {
+                    contentTitle
 
-                // HealthKit Progress Summary
-                VStack(alignment: .leading, spacing: 15) {
-                    if coreDataViewModel.fitnessEntity?.isStepsTracked == true {
-                        HStack {
-                            ProgressView("Daily Steps", value: Double(stepsWalked), total: Double(stepGoal))
-                                .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                            Text("\(stepsWalked)/\(stepGoal) steps")
-                                .font(.caption)
-                                .foregroundColor(.white)
-                        }
-                    }
+                    healthKitProgressSummary
+                        .padding()
+                        .background(Color(UIColor.systemGray6).opacity(0.8))
+                        .cornerRadius(15)
+                        .shadow(radius: 5)
 
-                    if coreDataViewModel.fitnessEntity?.isCaloriesTracked == true {
-                        HStack {
-                            ProgressView("Calories Burned", value: Double(caloriesBurned), total: Double(calorieGoal))
-                                .progressViewStyle(LinearProgressViewStyle(tint: .red))
-                            Text("\(caloriesBurned)/\(calorieGoal) CAL")
-                                .font(.caption)
-                                .foregroundColor(.white)
-                        }
-                    }
+                    goalsOverview
+                        .padding()
 
-                    if coreDataViewModel.fitnessEntity?.isWorkoutTracked == true {
-                        HStack {
-                            ProgressView("Exercise Time", value: Double(exerciseMinutes), total: Double(exerciseGoal))
-                                .progressViewStyle(LinearProgressViewStyle(tint: .orange))
-                            Text("\(exerciseMinutes)/\(exerciseGoal) MIN")
-                                .font(.caption)
-                                .foregroundColor(.white)
-                        }
-                    }
+                    Spacer()
                 }
                 .padding()
-                .background(Color(UIColor.systemGray6).opacity(0.8))
-                .cornerRadius(15)
-                .shadow(radius: 5)
-
-                // Goals Overview
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Goals")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.white)
-                        .shadow(color: .black, radius: 0.1, x: 0, y: 1)
-
-                    if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
-                        GoalRow(
-                            goalTitle: "Water Intake",
-                            progress: "\(waterIntake) gallons",
-                            goal: "\(waterGoal) gallons",
-                            isCompleted: waterIntake >= waterGoal
-                        ) {
-                            // Increment water intake and update Core Data
-                            if waterIntake < waterGoal {
-                                waterIntake += 1
-                                coreDataViewModel.updateWaterIntake(waterIntake)
-                            }
-                        }
+            } else {
+                // Landscape Mode
+                VStack {
+                    
+                    contentTitle
+                        .frame(maxWidth: .infinity, alignment: .center) // Center align in landscape
+                        .padding()
+                    HStack( spacing: 20) {
+                        healthKitProgressSummary
+                            .padding()
+                        
+                            .background(Color(UIColor.systemGray6).opacity(0.8))
+                            .cornerRadius(15)
+                            .shadow(radius: 5)
+                        
+                        goalsOverview
+                            .padding()
                     }
 
-                    if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
-                        GoalRow(
-                            goalTitle: "Stretching",
-                            progress: "\(stretchingMinutes) min",
-                            goal: "\(stretchingGoal) min",
-                            isCompleted: stretchingMinutes >= stretchingGoal
-                        ) {
-                            // Increment stretching minutes and update Core Data
-                            if stretchingMinutes < stretchingGoal {
-                                stretchingMinutes += 1
-                                coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
-                            }
-                        }
-                    }
+                    Spacer()
                 }
                 .padding()
-
-                Spacer()
             }
-            .padding()
-            .onAppear {
-                // Load saved data from Core Data
-                loadSavedData()
+        }
+        .onAppear {
+            // Load saved data from Core Data
+            loadSavedData()
 
-                // Fetch initial HealthKit data
-                fetchHealthData()
+            // Fetch initial HealthKit data
+            fetchHealthData()
+        }
+    }
+
+    // MARK: - Components
+
+    // Title
+    private var contentTitle: some View {
+        Text("Today's Fitness")
+            .font(.largeTitle)
+            .bold()
+            .padding(.top)
+            .foregroundColor(.white)
+            .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+    }
+
+    // HealthKit Progress Summary
+    private var healthKitProgressSummary: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            if coreDataViewModel.fitnessEntity?.isStepsTracked == true {
+                HStack {
+                    ProgressView("Daily Steps", value: Double(stepsWalked), total: Double(stepGoal))
+                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                    Text("\(stepsWalked)/\(stepGoal) steps")
+                        .font(.caption)
+                        .foregroundColor(.black)
+                }
+            }
+
+            if coreDataViewModel.fitnessEntity?.isCaloriesTracked == true {
+                HStack {
+                    ProgressView("Calories Burned", value: Double(caloriesBurned), total: Double(calorieGoal))
+                        .progressViewStyle(LinearProgressViewStyle(tint: .red))
+                    Text("\(caloriesBurned)/\(calorieGoal) CAL")
+                        .font(.caption)
+                        .foregroundColor(.black)
+                }
+            }
+
+            if coreDataViewModel.fitnessEntity?.isWorkoutTracked == true {
+                HStack {
+                    ProgressView("Exercise Time", value: Double(exerciseMinutes), total: Double(exerciseGoal))
+                        .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                    Text("\(exerciseMinutes)/\(exerciseGoal) MIN")
+                        .font(.caption)
+                        .foregroundColor(.black)
+                }
+            }
+        }
+    }
+
+    // Goals Overview
+    private var goalsOverview: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Goals")
+                .font(.title2)
+                .bold()
+                .foregroundColor(.white)
+                .shadow(color: .black, radius: 0.1, x: 0, y: 1)
+
+            if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
+                GoalRow(
+                    goalTitle: "Water Intake",
+                    progress: "\(waterIntake) gallons",
+                    goal: "\(waterGoal) gallons",
+                    isCompleted: waterIntake >= waterGoal
+                ) {
+                    // Increment water intake and update Core Data
+                    if waterIntake < waterGoal {
+                        waterIntake += 1
+                        coreDataViewModel.updateWaterIntake(waterIntake)
+                    }
+                }
+            }
+
+            if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
+                GoalRow(
+                    goalTitle: "Stretching",
+                    progress: "\(stretchingMinutes) min",
+                    goal: "\(stretchingGoal) min",
+                    isCompleted: stretchingMinutes >= stretchingGoal
+                ) {
+                    // Increment stretching minutes and update Core Data
+                    if stretchingMinutes < stretchingGoal {
+                        stretchingMinutes += 1
+                        coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
+                    }
+                }
             }
         }
     }
