@@ -40,7 +40,7 @@ struct CustomGoalsDetailView: View {
                             .progressViewStyle(LinearProgressViewStyle(tint: .blue))
                         Text("\(readingMinutes)/\(readingGoal) MIN")
                             .font(.caption)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     }
 
                     // Learning Progress
@@ -49,7 +49,7 @@ struct CustomGoalsDetailView: View {
                             .progressViewStyle(LinearProgressViewStyle(tint: .orange))
                         Text("\(learningTasks)/\(learningGoal) Tasks")
                             .font(.caption)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     }
 
                     // Cooking Progress
@@ -58,7 +58,7 @@ struct CustomGoalsDetailView: View {
                             .progressViewStyle(LinearProgressViewStyle(tint: .yellow))
                         Text("\(cookingMeals)/\(cookingGoal) Meals")
                             .font(.caption)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     }
                 }
                 .padding()

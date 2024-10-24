@@ -39,7 +39,7 @@ struct MentalHealthDetailView: View {
                                 .progressViewStyle(LinearProgressViewStyle(tint: .purple))
                             Text("\(meditationMinutes)/\(meditationGoal) MIN")
                                 .font(.caption)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                     }
 
@@ -50,7 +50,7 @@ struct MentalHealthDetailView: View {
                                 .progressViewStyle(LinearProgressViewStyle(tint: .green))
                             Text("\(outdoorMinutes)/\(outdoorGoal) MIN")
                                 .font(.caption)
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                         }
                     }
                 }
