@@ -4,6 +4,14 @@ struct MentalHealthDetailView: View {
     // Inject the CoreDataViewModel instance as an observed object
     @ObservedObject var coreDataViewModel: CoreDataViewModel
 
+    // Placeholder values for mental health tracking
+    @State private var meditationMinutes = 20 // Placeholder
+    @State private var outdoorMinutes = 30 // Placeholder
+
+    // Goal targets
+    private let meditationGoal = 60 // 60 minutes
+    private let outdoorGoal = 60 // 60 minutes
+
     var body: some View {
         ZStack {
             // Background image
@@ -27,9 +35,9 @@ struct MentalHealthDetailView: View {
                     // Meditation Tracking
                     if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
                         HStack {
-                            ProgressView("Meditation", value: 20, total: 60) // Placeholder values
+                            ProgressView("Meditation", value: Double(meditationMinutes), total: Double(meditationGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .purple))
-                            Text("20/60 MIN")
+                            Text("\(meditationMinutes)/\(meditationGoal) MIN")
                                 .font(.caption)
                                 .foregroundColor(.white)
                         }
@@ -38,9 +46,9 @@ struct MentalHealthDetailView: View {
                     // Outdoor Time Tracking
                     if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
                         HStack {
-                            ProgressView("Outdoor Time", value: 30, total: 60) // Placeholder values
+                            ProgressView("Outdoor Time", value: Double(outdoorMinutes), total: Double(outdoorGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .green))
-                            Text("30/60 MIN")
+                            Text("\(outdoorMinutes)/\(outdoorGoal) MIN")
                                 .font(.caption)
                                 .foregroundColor(.white)
                         }
@@ -59,12 +67,36 @@ struct MentalHealthDetailView: View {
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: 0.1, x: 0, y: 1)
 
+                    // Meditation Goal
                     if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
-                        GoalRow(goalTitle: "Daily Meditation", progress: "20 min", goal: "60 min") // Placeholder values
+                        GoalRow(
+                            goalTitle: "Daily Meditation",
+                            progress: "\(meditationMinutes) min",
+                            goal: "\(meditationGoal) min",
+                            isCompleted: meditationMinutes >= meditationGoal,
+                            incrementAction: {
+                                // Increment meditation minutes
+                                if meditationMinutes < meditationGoal {
+                                    meditationMinutes += 1
+                                }
+                            }
+                        )
                     }
                     
+                    // Outdoor Time Goal
                     if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
-                        GoalRow(goalTitle: "Fresh Air", progress: "30 min", goal: "60 min") // Placeholder values
+                        GoalRow(
+                            goalTitle: "Fresh Air",
+                            progress: "\(outdoorMinutes) min",
+                            goal: "\(outdoorGoal) min",
+                            isCompleted: outdoorMinutes >= outdoorGoal,
+                            incrementAction: {
+                                // Increment outdoor minutes
+                                if outdoorMinutes < outdoorGoal {
+                                    outdoorMinutes += 1
+                                }
+                            }
+                        )
                     }
                 }
                 .padding()

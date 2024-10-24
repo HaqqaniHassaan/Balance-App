@@ -2,11 +2,15 @@ import SwiftUI
 
 struct FitnessDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
+
+    // Bind water intake and stretching minutes to Core Data
+    @State private var waterIntake: Int = 0
+    @State private var stretchingMinutes: Int = 0
+
+    // State variables for HealthKit data
     @State private var stepsWalked: Int = 0
     @State private var caloriesBurned: Int = 0
     @State private var exerciseMinutes: Int = 0
-    @State private var waterIntake: Int = 0
-    @State private var stretchingMinutes: Int = 0
 
     // Placeholder goals
     private let stepGoal = 10000
@@ -32,38 +36,35 @@ struct FitnessDetailView: View {
                     .foregroundColor(.white)
                     .shadow(color: .black, radius: 0.1, x: 0, y: 2)
 
-                // Progress Summary
+                // HealthKit Progress Summary
                 VStack(alignment: .leading, spacing: 15) {
-                    // Steps tracking
                     if coreDataViewModel.fitnessEntity?.isStepsTracked == true {
                         HStack {
                             ProgressView("Daily Steps", value: Double(stepsWalked), total: Double(stepGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .blue))
                             Text("\(stepsWalked)/\(stepGoal) steps")
                                 .font(.caption)
-                                .foregroundColor(.black)
+                                .foregroundColor(.white)
                         }
                     }
 
-                    // Calories tracking
                     if coreDataViewModel.fitnessEntity?.isCaloriesTracked == true {
                         HStack {
                             ProgressView("Calories Burned", value: Double(caloriesBurned), total: Double(calorieGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .red))
                             Text("\(caloriesBurned)/\(calorieGoal) CAL")
                                 .font(.caption)
-                                .foregroundColor(.black)
+                                .foregroundColor(.white)
                         }
                     }
 
-                    // Exercise tracking
                     if coreDataViewModel.fitnessEntity?.isWorkoutTracked == true {
                         HStack {
                             ProgressView("Exercise Time", value: Double(exerciseMinutes), total: Double(exerciseGoal))
                                 .progressViewStyle(LinearProgressViewStyle(tint: .orange))
                             Text("\(exerciseMinutes)/\(exerciseGoal) MIN")
                                 .font(.caption)
-                                .foregroundColor(.black)
+                                .foregroundColor(.white)
                         }
                     }
                 }
@@ -81,11 +82,33 @@ struct FitnessDetailView: View {
                         .shadow(color: .black, radius: 0.1, x: 0, y: 1)
 
                     if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
-                        GoalRow(goalTitle: "Water Intake", progress: "\(waterIntake) gallons", goal: "\(waterGoal) gallons")
+                        GoalRow(
+                            goalTitle: "Water Intake",
+                            progress: "\(waterIntake) gallons",
+                            goal: "\(waterGoal) gallons",
+                            isCompleted: waterIntake >= waterGoal
+                        ) {
+                            // Increment water intake and update Core Data
+                            if waterIntake < waterGoal {
+                                waterIntake += 1
+                                coreDataViewModel.updateWaterIntake(waterIntake)
+                            }
+                        }
                     }
 
                     if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
-                        GoalRow(goalTitle: "Stretching", progress: "\(stretchingMinutes) min", goal: "\(stretchingGoal) min")
+                        GoalRow(
+                            goalTitle: "Stretching",
+                            progress: "\(stretchingMinutes) min",
+                            goal: "\(stretchingGoal) min",
+                            isCompleted: stretchingMinutes >= stretchingGoal
+                        ) {
+                            // Increment stretching minutes and update Core Data
+                            if stretchingMinutes < stretchingGoal {
+                                stretchingMinutes += 1
+                                coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
+                            }
+                        }
                     }
                 }
                 .padding()
@@ -94,9 +117,22 @@ struct FitnessDetailView: View {
             }
             .padding()
             .onAppear {
+                // Load saved data from Core Data
+                loadSavedData()
+
                 // Fetch initial HealthKit data
                 fetchHealthData()
             }
+        }
+    }
+
+    // MARK: - Load Saved Data
+    private func loadSavedData() {
+        if let savedWaterIntake = coreDataViewModel.fitnessEntity?.waterIntake {
+            waterIntake = Int(savedWaterIntake)
+        }
+        if let savedStretchingMinutes = coreDataViewModel.fitnessEntity?.stretchingMinutes {
+            stretchingMinutes = Int(savedStretchingMinutes)
         }
     }
 
@@ -134,33 +170,6 @@ struct FitnessDetailView: View {
                 }
             }
         }
-    }
-}
-
-// MARK: - Goal Row Component
-struct GoalRow: View {
-    var goalTitle: String
-    var progress: String
-    var goal: String
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(goalTitle)
-                    .font(.headline)
-                    .foregroundColor(.black)
-                Text("\(progress) / \(goal)")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-            
-            Spacer()
-        }
-        .padding()
-        .frame(maxWidth: .infinity, minHeight: 60)
-        .background(Color(UIColor.systemGray6).opacity(0.8))
-        .cornerRadius(10)
-        .shadow(radius: 3)
     }
 }
 

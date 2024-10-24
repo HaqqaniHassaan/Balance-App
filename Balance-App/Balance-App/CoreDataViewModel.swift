@@ -133,6 +133,18 @@ class CoreDataViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Update Water Intake
+    func updateWaterIntake(_ value: Int) {
+        fitnessEntity?.waterIntake = Int64(value)
+        saveData()
+    }
+
+    // MARK: - Update Stretching Minutes
+    func updateStretchingMinutes(_ value: Int) {
+        fitnessEntity?.stretchingMinutes = Int64(value)
+        saveData()
+    }
+
     // MARK: - Update Methods
     func updateFitnessGoal(for attribute: WritableKeyPath<FitnessEntity, Bool>, value: Bool) {
         fitnessEntity?[keyPath: attribute] = value

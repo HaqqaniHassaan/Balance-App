@@ -12,10 +12,12 @@
         <attribute name="isStretchingTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isWaterTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isWorkoutTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="minutesStretched" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stepsGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stepsWalked" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="waterConsumed" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stretchingMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="waterGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterIntake" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="workoutDuration" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">

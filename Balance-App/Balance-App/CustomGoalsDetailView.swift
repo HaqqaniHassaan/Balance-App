@@ -4,6 +4,16 @@ struct CustomGoalsDetailView: View {
     // Inject the CoreDataViewModel instance
     @ObservedObject var coreDataViewModel: CoreDataViewModel
 
+    // Placeholder values for goals
+    @State private var readingMinutes = 30
+    @State private var learningTasks = 1
+    @State private var cookingMeals = 1
+
+    // Goal targets
+    private let readingGoal = 60 // 60 minutes
+    private let learningGoal = 2 // 2 tasks
+    private let cookingGoal = 3 // 3 meals
+
     var body: some View {
         ZStack {
             // Background image
@@ -22,32 +32,41 @@ struct CustomGoalsDetailView: View {
                     .foregroundColor(.white)
                     .shadow(color: .black, radius: 0.1, x: 0, y: 2)
 
-                // Placeholder Progress Summary
+                // Progress Summary
                 VStack(alignment: .leading, spacing: 15) {
-                    ProgressView("Reading", value: 30, total: 60) // Placeholder values
-                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                    Text("30/60 MIN")
-                        .font(.caption)
-                        .foregroundColor(.white)
+                    // Reading Progress
+                    HStack {
+                        ProgressView("Reading", value: Double(readingMinutes), total: Double(readingGoal))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                        Text("\(readingMinutes)/\(readingGoal) MIN")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                    }
 
-                    ProgressView("Learning", value: 1, total: 2) // Placeholder values
-                        .progressViewStyle(LinearProgressViewStyle(tint: .orange))
-                    Text("1/2 Tasks")
-                        .font(.caption)
-                        .foregroundColor(.white)
+                    // Learning Progress
+                    HStack {
+                        ProgressView("Learning", value: Double(learningTasks), total: Double(learningGoal))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                        Text("\(learningTasks)/\(learningGoal) Tasks")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                    }
 
-                    ProgressView("Cooking", value: 1, total: 3) // Placeholder values
-                        .progressViewStyle(LinearProgressViewStyle(tint: .yellow))
-                    Text("1/3 Meals")
-                        .font(.caption)
-                        .foregroundColor(.white)
+                    // Cooking Progress
+                    HStack {
+                        ProgressView("Cooking", value: Double(cookingMeals), total: Double(cookingGoal))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .yellow))
+                        Text("\(cookingMeals)/\(cookingGoal) Meals")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                    }
                 }
                 .padding()
                 .background(Color(UIColor.systemGray6).opacity(0.8))
                 .cornerRadius(15)
                 .shadow(radius: 5)
 
-                // Placeholder Goals Overview
+                // Goals Overview
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Goals")
                         .font(.title2)
@@ -55,9 +74,45 @@ struct CustomGoalsDetailView: View {
                         .foregroundColor(.white)
                         .shadow(color: .black, radius: 0.1, x: 0, y: 1)
 
-                    GoalRow(goalTitle: "Daily Reading", progress: "30 min", goal: "60 min")
-                    GoalRow(goalTitle: "Learning Sessions", progress: "1 task", goal: "2 tasks")
-                    GoalRow(goalTitle: "Cooking Meals", progress: "1 meal", goal: "3 meals")
+                    // Goal Rows with manual increment functionality
+                    GoalRow(
+                        goalTitle: "Daily Reading",
+                        progress: "\(readingMinutes) min",
+                        goal: "\(readingGoal) min",
+                        isCompleted: readingMinutes >= readingGoal,
+                        incrementAction: {
+                            // Increment reading minutes
+                            if readingMinutes < readingGoal {
+                                readingMinutes += 1
+                            }
+                        }
+                    )
+
+                    GoalRow(
+                        goalTitle: "Learning Sessions",
+                        progress: "\(learningTasks) task",
+                        goal: "\(learningGoal) tasks",
+                        isCompleted: learningTasks >= learningGoal,
+                        incrementAction: {
+                            // Increment learning tasks
+                            if learningTasks < learningGoal {
+                                learningTasks += 1
+                            }
+                        }
+                    )
+
+                    GoalRow(
+                        goalTitle: "Cooking Meals",
+                        progress: "\(cookingMeals) meal",
+                        goal: "\(cookingGoal) meals",
+                        isCompleted: cookingMeals >= cookingGoal,
+                        incrementAction: {
+                            // Increment cooking meals
+                            if cookingMeals < cookingGoal {
+                                cookingMeals += 1
+                            }
+                        }
+                    )
                 }
                 .padding()
 
