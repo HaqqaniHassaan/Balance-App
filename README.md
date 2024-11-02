@@ -10,7 +10,7 @@
 
 
 **Balance** is a all-in-one lifestyle app that empowers users to set, track, and maintain both physical and mental health goals. Designed to encourage a balanced lifestyle, the app integrates seamlessly with HealthKit for physical metrics as well as CoreData for persistent data tracking and offers personalized goal-setting capabilities.
-Balance is still in active development, stay tuned and follow this repo for updates!
+Balance is still in active development and is in what I would consider a beta build, with all core functionality, UI design, and features in place in this working build, however stay tuned and follow this repo for updates as I continue to implement new features, fixing potential bugs, and more!
 <table align="center">
   <tr>
     <td align="center"><img src="https://i.imgur.com/NAW8RXx.png" width="200" alt="Onboarding"/></td>
