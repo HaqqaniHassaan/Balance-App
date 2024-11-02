@@ -1,0 +1,2 @@
+The contents of this directory (Figma design files, mockups, etc) were drafted and designed roughly 3 or so weeks prior to my development of the app, however I only uploaded them to the repo after about 2 weeks of development.
+Thank you for taking the taking to view my app and stay tuned for more continued development as we move through the beta phase of the app.
