@@ -16,9 +16,8 @@ Balance is still in active development and is in what I would consider a beta bu
     <td align="center"><img src="https://i.imgur.com/NAW8RXx.png" width="200" alt="Onboarding"/></td>
     <td align="center"><img src="https://i.imgur.com/3EgA7iU.png" width="200" alt="Home View"/></td>
     <td align="center"><img src="https://i.imgur.com/lZAhm6v.png" width="200" alt="Physical Goals Onboarding"/></td>
-        <td align="center"><img src="https://i.imgur.com/PoDKElw.png" width="200" alt="Mental Health Goals Onboarding"/></td>
+    <td align="center"><img src="https://i.imgur.com/PoDKElw.png" width="200" alt="Mental Health Goals Onboarding"/></td>
     <td align="center"><img src="https://i.imgur.com/GoCXnGb.png" width="200" alt="Custom Goals Onboarding"/></td>
-    <td align="center"><img src="https://i.imgur.com/gvPH5M8.png" width="200" alt="HealthKit"/></td>
   </tr>
 </table>
 
