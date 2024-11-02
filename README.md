@@ -11,16 +11,21 @@
 
 **Balance** is a all-in-one lifestyle app that empowers users to set, track, and maintain both physical and mental health goals. Designed to encourage a balanced lifestyle, the app integrates seamlessly with HealthKit for physical metrics as well as CoreData for persistent data tracking and offers personalized goal-setting capabilities.
 Balance is still in active development, stay tuned and follow this repo for updates!
-<p align="center">
-  <img src="https://i.imgur.com/NAW8RXx.png" width="200" alt="Onboarding"/>
-  <img src="https://i.imgur.com/oQv1o96.png" width="200" alt="Home View"/>
-  <img src="https://i.imgur.com/lZAhm6v.png" width="200" alt="Goals View"/>
-</p>
+<table align="center">
+  <tr>
+    <td align="center"><img src="https://i.imgur.com/NAW8RXx.png" width="200" alt="Onboarding"/></td>
+    <td align="center"><img src="https://i.imgur.com/3EgA7iU.png" width="200" alt="Home View"/></td>
+    <td align="center"><img src="https://i.imgur.com/lZAhm6v.png" width="200" alt="Physical Goals Onboarding"/></td>
+        <td align="center"><img src="https://i.imgur.com/PoDKElw.png" width="200" alt="Mental Health Goals Onboarding"/></td>
+    <td align="center"><img src="https://i.imgur.com/GoCXnGb.png" width="200" alt="Custom Goals Onboarding"/></td>
+    <td align="center"><img src="https://i.imgur.com/gvPH5M8.png" width="200" alt="HealthKit"/></td>
+  </tr>
+</table>
 
 ## Overview
 
-The Balance app is structured using **MVVC (Model-View-ViewModel-Coordinator)** architecture to maintain a clean, modular, and easily scalable codebase. This design choice enhances code reusability and separation of concerns, enabling clear boundaries between the user interface, data handling, and business logic.
-
+The Balance app is structured using **MVVC (Model-View-ViewModel-Coordinator)** architecture to maintain a clean, modular, and easily scalable codebase. This design choice enhances code reusability and separation of concerns, enabling clear boundaries between the user interface, data handling, and business logic. Additionally, the design flow, UI, animations (including screen-to-screen state flow diagrams, UI design choices, transition animations) were designed and prototyped in **Figma** (mockups, wireframes, prototypes)
+ as well as **draw.io** for the app flow (see App Specification folder), which provided a quality guideline to follow before starting development in line with best practices for quality app development flow.
 ## Key Features
 
 - **Goal Tracking**: Track both physical and mental wellness goals, such as workouts, meditation, and outdoor time.
