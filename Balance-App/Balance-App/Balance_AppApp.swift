@@ -1,6 +1,6 @@
 import SwiftUI
-// To TAs, read beta app overview at bottom of main app struct
 @main
+/* Developed by Hassaan Haqqani, still in active development*/
 struct Balance_AppApp: App {
     // Create a shared instance of CoreDataViewModel
     @StateObject private var coreDataViewModel = CoreDataViewModel()
