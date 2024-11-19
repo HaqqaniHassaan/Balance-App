@@ -1,16 +1,13 @@
 import SwiftUI
 
 struct MentalHealthDetailView: View {
-    // Inject the CoreDataViewModel instance as an observed object
     @ObservedObject var coreDataViewModel: CoreDataViewModel
 
-    // Placeholder values for mental health tracking
-    @State private var meditationMinutes = 20 // Placeholder
-    @State private var outdoorMinutes = 30 // Placeholder
+    @State private var meditationMinutes = 0
+    @State private var outdoorMinutes = 0
 
-    // Goal targets
-    private let meditationGoal = 60 // 60 minutes
-    private let outdoorGoal = 60 // 60 minutes
+    private let meditationGoal = 60
+    private let outdoorGoal = 60
 
     var body: some View {
         ZStack {
@@ -18,100 +15,107 @@ struct MentalHealthDetailView: View {
             Image("background_image")
                 .resizable()
                 .scaledToFill()
-                .frame(minWidth: 0)
-                .edgesIgnoringSafeArea(.all)
+                .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                // Title
-                Text("Today's Mental Health")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.top)
-                    .foregroundColor(.white)
-                    .shadow(color: .black, radius: 0.1, x: 0, y: 2)
-
-                // Progress Summary
-                VStack(alignment: .leading, spacing: 15) {
-                    // Meditation Tracking
-                    if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
-                        HStack {
-                            ProgressView("Meditation", value: Double(meditationMinutes), total: Double(meditationGoal))
-                                .progressViewStyle(LinearProgressViewStyle(tint: .purple))
-                            Text("\(meditationMinutes)/\(meditationGoal) MIN")
-                                .font(.caption)
-                                .foregroundColor(.black)
-                        }
-                    }
-
-                    // Outdoor Time Tracking
-                    if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
-                        HStack {
-                            ProgressView("Outdoor Time", value: Double(outdoorMinutes), total: Double(outdoorGoal))
-                                .progressViewStyle(LinearProgressViewStyle(tint: .green))
-                            Text("\(outdoorMinutes)/\(outdoorGoal) MIN")
-                                .font(.caption)
-                                .foregroundColor(.black)
-                        }
-                    }
-                }
-                .padding()
-                .background(Color(UIColor.systemGray6).opacity(0.8))
-                .cornerRadius(15)
-                .shadow(radius: 5)
-
-                // Goals Overview
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Goals")
-                        .font(.title2)
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Title
+                    Text("Today's Mental Health")
+                        .font(.largeTitle)
                         .bold()
                         .foregroundColor(.white)
-                        .shadow(color: .black, radius: 0.1, x: 0, y: 1)
+                        .shadow(color: .black, radius: 0.05, x: 0, y: 2)
+                        .padding(.top, 20) // Add padding for better spacing
 
-                    // Meditation Goal
-                    if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
-                        GoalRow(
-                            goalTitle: "Daily Meditation",
-                            progress: "\(meditationMinutes) min",
-                            goal: "\(meditationGoal) min",
-                            isCompleted: meditationMinutes >= meditationGoal,
-                            incrementAction: {
-                                // Increment meditation minutes
-                                if meditationMinutes < meditationGoal {
-                                    meditationMinutes += 1
-                                }
+                    // Progress Summary
+                    VStack(alignment: .leading, spacing: 15) {
+                        if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
+                            HStack {
+                                ProgressView("Meditation", value: Double(meditationMinutes), total: Double(meditationGoal))
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .purple))
+                                    .frame(maxWidth: .infinity, alignment: .leading) // Ensure alignment
+                                Text("\(meditationMinutes)/\(meditationGoal) MIN")
+                                    .font(.caption)
+                                    .foregroundColor(.black)
                             }
-                        )
-                    }
-                    
-                    // Outdoor Time Goal
-                    if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
-                        GoalRow(
-                            goalTitle: "Fresh Air",
-                            progress: "\(outdoorMinutes) min",
-                            goal: "\(outdoorGoal) min",
-                            isCompleted: outdoorMinutes >= outdoorGoal,
-                            incrementAction: {
-                                // Increment outdoor minutes
-                                if outdoorMinutes < outdoorGoal {
-                                    outdoorMinutes += 1
-                                }
+                        }
+
+                        if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
+                            HStack {
+                                ProgressView("Outdoor Time", value: Double(outdoorMinutes), total: Double(outdoorGoal))
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                                    .frame(maxWidth: .infinity, alignment: .leading) // Ensure alignment
+                                Text("\(outdoorMinutes)/\(outdoorGoal) MIN")
+                                    .font(.caption)
+                                    .foregroundColor(.black)
                             }
-                        )
+                        }
                     }
+                    .padding()
+                    .background(Color(UIColor.systemGray6).opacity(0.8))
+                    .cornerRadius(15)
+                    .shadow(radius: 5)
+                    .frame(maxWidth: 350) // Constrain the width for better visual balance
+
+                    // Goals Overview
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Goals")
+                            .font(.title2)
+                            .bold()
+                            .foregroundColor(.white)
+                            .shadow(color: .black, radius: 0.05, x: 0, y: 1)
+
+                        if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
+                            GoalRow(
+                                goalTitle: "Daily Meditation",
+                                progress: "\(meditationMinutes) min",
+                                goal: "\(meditationGoal) min",
+                                isCompleted: meditationMinutes >= meditationGoal,
+                                incrementAction: {
+                                    if meditationMinutes < meditationGoal {
+                                        meditationMinutes += 1
+                                        coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
+                                    }
+                                }
+                            )
+                        }
+
+                        if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
+                            GoalRow(
+                                goalTitle: "Fresh Air",
+                                progress: "\(outdoorMinutes) min",
+                                goal: "\(outdoorGoal) min",
+                                isCompleted: outdoorMinutes >= outdoorGoal,
+                                incrementAction: {
+                                    if outdoorMinutes < outdoorGoal {
+                                        outdoorMinutes += 1
+                                        coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    .padding()
+                    .background(Color(UIColor.systemGray6).opacity(0.8))
+                    .cornerRadius(15)
+                    .shadow(radius: 5)
+                    .frame(maxWidth: 350) // Constrain the width
                 }
                 .padding()
-
-                Spacer()
+                .frame(maxWidth: .infinity) // Center the content
             }
-            .padding()
+        }
+        .onAppear {
+            loadSavedData()
         }
     }
-}
 
-// Preview for MentalHealthDetailView
-
-
-#Preview {
-    MentalHealthDetailView(coreDataViewModel: CoreDataViewModel())
-
+    private func loadSavedData() {
+        if let savedMeditationMinutes = coreDataViewModel.mentalHealthEntity?.meditationMinutes {
+            meditationMinutes = Int(savedMeditationMinutes)
+        }
+        if let savedOutdoorMinutes = coreDataViewModel.mentalHealthEntity?.outdoorMinutes {
+            outdoorMinutes = Int(savedOutdoorMinutes)
+        }
+    }
 }

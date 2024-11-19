@@ -167,6 +167,12 @@ class CoreDataViewModel: ObservableObject {
         customGoalsEntity?[keyPath: keyPath] = value
         saveData()
     }
+    // Update integer metrics in MentalHealthEntity
+    func updateMentalHealthMetric(for keyPath: WritableKeyPath<MentalHealthEntity, Int64>, value: Int64) {
+        mentalHealthEntity?[keyPath: keyPath] = value
+        saveData()
+    }
+
 
     // MARK: - Onboarding Completion Logic
     func completeOnboarding() {

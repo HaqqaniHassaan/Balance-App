@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="23H222" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="CustomGoalsEntity" representedClassName="CustomGoalsEntity" syncable="YES" codeGenerationType="class">
         <attribute name="isCustomGoalTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isOnboardingComplete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -23,8 +23,8 @@
     <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">
         <attribute name="isMeditationTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isOutdoorTimeTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="meditationDuration" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="meditationGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="meditationMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="outdoorGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="outdoorMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
