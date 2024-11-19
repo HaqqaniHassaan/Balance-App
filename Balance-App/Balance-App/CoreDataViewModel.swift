@@ -173,6 +173,33 @@ class CoreDataViewModel: ObservableObject {
         saveData()
     }
 
+    // Add this to CoreDataViewModel
+    func addCustomGoal(name: String, target: Int64) {
+        guard let customGoalsEntity = self.customGoalsEntity else { return }
+
+        let newGoal = Goal(context: container.viewContext)
+        newGoal.name = name
+        newGoal.target = target
+        newGoal.progress = 0
+        newGoal.customGoalsEntity = customGoalsEntity // Establish the relationship
+
+        saveData()
+    }
+    func deleteGoal(_ goal: Goal) {
+        container.viewContext.delete(goal)
+        saveData()
+    }
+    func updateGoalProgress(_ goal: Goal, progress: Int64) {
+        goal.progress = progress
+        saveData()
+    }
+
+
+    func fetchCustomGoals() -> [Goal] {
+        guard let customGoalsEntity = self.customGoalsEntity else { return [] }
+        return Array(customGoalsEntity.goals as? Set<Goal> ?? [])
+    }
+
 
     // MARK: - Onboarding Completion Logic
     func completeOnboarding() {

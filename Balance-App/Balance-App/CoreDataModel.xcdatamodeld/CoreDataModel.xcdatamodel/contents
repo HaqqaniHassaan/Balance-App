@@ -3,8 +3,10 @@
     <entity name="CustomGoalsEntity" representedClassName="CustomGoalsEntity" syncable="YES" codeGenerationType="class">
         <attribute name="isCustomGoalTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isOnboardingComplete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="goals" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Goal" inverseName="customGoalsEntity" inverseEntity="Goal"/>
     </entity>
     <entity name="FitnessEntity" representedClassName="FitnessEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="attribute" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="caloriesBurned" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="caloriesGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isCaloriesTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -19,6 +21,12 @@
         <attribute name="waterGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="waterIntake" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="workoutDuration" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="Goal" representedClassName="Goal" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="progress" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="target" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="customGoalsEntity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CustomGoalsEntity" inverseName="goals" inverseEntity="CustomGoalsEntity"/>
     </entity>
     <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">
         <attribute name="isMeditationTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
