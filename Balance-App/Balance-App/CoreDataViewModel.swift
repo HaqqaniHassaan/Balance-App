@@ -174,17 +174,20 @@ class CoreDataViewModel: ObservableObject {
     }
 
     // Add this to CoreDataViewModel
-    func addCustomGoal(name: String, target: Int64) {
+    func addCustomGoal(name: String, target: Int64, isCheckable: Bool = false) {
         guard let customGoalsEntity = self.customGoalsEntity else { return }
 
         let newGoal = Goal(context: container.viewContext)
         newGoal.name = name
         newGoal.target = target
         newGoal.progress = 0
-        newGoal.customGoalsEntity = customGoalsEntity // Establish the relationship
+        newGoal.isCheckable = isCheckable
+        newGoal.customGoalsEntity = customGoalsEntity
 
         saveData()
     }
+
+
     func deleteGoal(_ goal: Goal) {
         container.viewContext.delete(goal)
         saveData()
