@@ -2,7 +2,6 @@ import SwiftUI
 
 struct OnboardingWelcomeView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
-    @State private var navigateToNext: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -29,9 +28,7 @@ struct OnboardingWelcomeView: View {
                 Spacer()
 
                 // Get Started Button
-                Button(action: {
-                    navigateToNext = true
-                }) {
+                NavigationLink(destination: OnboardingPhysicalGoalsView(coreDataViewModel: coreDataViewModel)) {
                     Text("Get Started")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -43,7 +40,7 @@ struct OnboardingWelcomeView: View {
                         .shadow(radius: 5)
                 }
                 .padding(.bottom, 50)
-                
+
                 Spacer()
             }
             .padding()
@@ -53,9 +50,6 @@ struct OnboardingWelcomeView: View {
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)
             )
-            .navigationDestination(isPresented: $navigateToNext) {
-                OnboardingPhysicalGoalsView(coreDataViewModel: coreDataViewModel)
-            }
         }
     }
 }

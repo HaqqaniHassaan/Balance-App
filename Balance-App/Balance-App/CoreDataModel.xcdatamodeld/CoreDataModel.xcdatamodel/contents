@@ -9,20 +9,27 @@
         <attribute name="attribute" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="caloriesBurned" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="caloriesGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="caloriesStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isCaloriesTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isStepsTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isStretchingGoalCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isStretchingTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWaterGoalCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isWaterTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isWorkoutTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="minutesStretched" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stepsGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stepsStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stepsWalked" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stretchingMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stretchingStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="waterGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="waterIntake" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="workoutDuration" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="Goal" representedClassName="Goal" syncable="YES" codeGenerationType="class">
+        <attribute name="isCheckable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="progress" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="target" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

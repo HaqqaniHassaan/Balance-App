@@ -12,7 +12,8 @@ struct GoalRow: View {
     var progress: String
     var goal: String
     var isCompleted: Bool
-    var incrementAction: () -> Void
+    var isCheckable: Bool // New parameter to distinguish between checkable and incrementable goals
+    var action: () -> Void // Generalized action for either incrementing or checking
 
     var body: some View {
         HStack {
@@ -20,18 +21,33 @@ struct GoalRow: View {
                 Text(goalTitle)
                     .font(.headline)
                     .foregroundColor(isCompleted ? .white : .black)
-                Text("\(progress) / \(goal)")
+                Text(isCheckable ? "Check the box if you've completed this goal." : "\(progress) / \(goal)") // Show progress only for incrementable goals
                     .font(.caption)
-                    .foregroundColor(isCompleted ? .yellow : .gray)
+                    .foregroundColor(isCompleted ? .white : .gray)
             }
-            
+
             Spacer()
-            
-            // Increment Button
-            Button(action: incrementAction) {
-                Image(systemName: "plus.circle.fill")
-                    .foregroundColor(isCompleted ? .white : .blue)
-                    .font(.title2)
+
+            // Checkable or Increment Button
+            if isCheckable {
+                Button(action: action) {
+                    Image(systemName: isCompleted ? "checkmark.square.fill" : "square")
+                        .foregroundColor(isCompleted ? .white : .blue)
+                        .font(.title2)
+                }
+            } else {
+                Button(action: action) {
+                    if isCompleted{
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.white)
+                            .font(.title2)
+                    }
+                    else{
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.blue)
+                            .font(.title2)
+                    }
+                }
             }
         }
         .padding()
@@ -45,4 +61,3 @@ struct GoalRow: View {
         .shadow(radius: isCompleted ? 5 : 3)
     }
 }
-

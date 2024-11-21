@@ -13,84 +13,86 @@ struct CustomGoalsDetailView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                // Title
-                Text("Custom Goals")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(.white)
-                    .shadow(color: .black, radius: 0.1, x: 0, y: 2)
-                    .padding(.top, 20)
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Title
+                    CustomGoalsTitleView()
 
-                ScrollView {
-                    VStack(spacing: 15) {
-                        // Add a heading for the custom goals list
-                        Text("Your Goals")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
-
-                        ForEach(customGoals, id: \.self) { goal in
-                            goalProgressRow(for: goal)
-                        }
-                    }
-                    .padding(.horizontal, 20) // Add horizontal padding to constrain width
-                    .background(Color(UIColor.systemGray6).opacity(0.8))
-                    .cornerRadius(15)
-                    .shadow(radius: 5)
+                    // Goals Overview
+                    GoalsOverviewView(
+                        customGoals: customGoals,
+                        coreDataViewModel: coreDataViewModel,
+                        onUpdateGoals: loadCustomGoals
+                    )
                 }
-                .frame(maxWidth: 400) // Explicitly constrain the maximum width for portrait mode
-
-                Spacer()
+                .padding()
+                .frame(maxWidth: .infinity) // Center the content
             }
-            .padding()
         }
         .onAppear {
-            // Fetch the latest custom goals when the view appears
             loadCustomGoals()
         }
     }
 
     // MARK: - Helper Functions
-
     /// Fetches the custom goals from Core Data
     private func loadCustomGoals() {
         customGoals = coreDataViewModel.fetchCustomGoals()
     }
+}
 
-    /// Creates a progress row for a specific goal
-    private func goalProgressRow(for goal: Goal) -> some View {
+// MARK: - Subviews
+
+/// Title View
+struct CustomGoalsTitleView: View {
+    var body: some View {
+        Text("Today's Custom Goals")
+            .font(.largeTitle)
+            .bold()
+            .foregroundColor(.white)
+            .padding(.top, 20)
+    }
+}
+
+/// Goals Overview View
+struct GoalsOverviewView: View {
+    let customGoals: [Goal]
+    let coreDataViewModel: CoreDataViewModel
+    let onUpdateGoals: () -> Void
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // Display progress bar and current goal progress
-            HStack {
-                ProgressView(goal.name ?? "Unnamed Goal", value: Double(goal.progress), total: Double(goal.target))
-                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                
-                Text("\(goal.progress)/\(goal.target)")
-                    .font(.caption)
-                    .foregroundColor(.black)
-            }
+            Text("Your Goals")
+                .font(.title2)
+                .bold()
+                .foregroundColor(.white)
 
-            // Goal row with increment functionality
-            GoalRow(
-                goalTitle: goal.name ?? "Unnamed Goal",
-                progress: "\(goal.progress)",
-                goal: "\(goal.target)",
-                isCompleted: goal.progress >= goal.target,
-                incrementAction: {
-                    if goal.progress < goal.target {
-                        coreDataViewModel.updateGoalProgress(goal, progress: goal.progress + 1)
-                        loadCustomGoals() // Refresh goals after updating progress
+            ForEach(customGoals, id: \.self) { goal in
+                GoalRow(
+                    goalTitle: goal.name ?? "Unnamed Goal",
+                    progress: "\(goal.progress)",
+                    goal: "\(goal.target)",
+                    isCompleted: goal.progress >= goal.target,
+                    isCheckable: goal.isCheckable
+                ) {
+                    if goal.isCheckable {
+                        // Mark goal as completed by setting progress to target
+                        coreDataViewModel.updateGoalProgress(goal, progress: goal.target)
+                    } else {
+                        // Increment progress for incrementable goals
+                        if goal.progress < goal.target {
+                            coreDataViewModel.updateGoalProgress(goal, progress: goal.progress + 1)
+                        }
                     }
+                    onUpdateGoals() // Refresh goals after updating progress
                 }
-            )
+            }
         }
         .padding()
-        .frame(maxWidth: .infinity)
-        .background(Color.white.opacity(0.2))
-        .cornerRadius(10)
+        .background(Color(UIColor.systemGray6).opacity(0.8))
+        .cornerRadius(15)
+        .shadow(radius: 5)
+        .frame(maxWidth: 350) // Constrain the width
     }
 }
 

@@ -71,7 +71,8 @@ struct MentalHealthDetailView: View {
                                 progress: "\(meditationMinutes) min",
                                 goal: "\(meditationGoal) min",
                                 isCompleted: meditationMinutes >= meditationGoal,
-                                incrementAction: {
+                                isCheckable: false, // Incrementable goal
+                                action: {
                                     if meditationMinutes < meditationGoal {
                                         meditationMinutes += 1
                                         coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
@@ -86,13 +87,11 @@ struct MentalHealthDetailView: View {
                                 progress: "\(outdoorMinutes) min",
                                 goal: "\(outdoorGoal) min",
                                 isCompleted: outdoorMinutes >= outdoorGoal,
-                                incrementAction: {
-                                    if outdoorMinutes < outdoorGoal {
-                                        outdoorMinutes += 1
-                                        coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
-                                    }
-                                }
-                            )
+                                isCheckable: true // Checkable goal
+                            ) {
+                                outdoorMinutes = outdoorGoal + 1 // Mark as completed
+                                coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
+                            }
                         }
                     }
                     .padding()

@@ -21,30 +21,34 @@ struct ContentView: View {
     }
 
     var body: some View {
-        ZStack {
-            // Your background image or color here
-
-            TabView {
-                HomeView(coreDataViewModel: coreDataViewModel)
-                    .tabItem {
-                        Image(systemName: "house.fill")
-                        Text("Home")
-                    }
+        NavigationView{
+            ZStack {
+                // Your background image or color here
                 
-                ProgressViewTab(coreDataViewModel: coreDataViewModel)
-                    .tabItem {
-                        Image(systemName: "chart.bar.fill")
-                        Text("Progress")
-                    }
-                
-                SettingsView(coreDataViewModel: coreDataViewModel)
-                    .tabItem {
-                        Image(systemName: "gearshape.fill")
-                        Text("Settings")
-                    }
+                TabView {
+                    HomeView(coreDataViewModel: coreDataViewModel)
+                        .tabItem {
+                            Image(systemName: "house.fill")
+                            Text("Home")
+                        }
+                    
+                    ProgressViewTab(coreDataViewModel: coreDataViewModel)
+                        .tabItem {
+                            Image(systemName: "chart.bar.fill")
+                            Text("Progress")
+                        }
+                    
+                    SettingsView(coreDataViewModel: coreDataViewModel)
+                        .tabItem {
+                            Image(systemName: "gearshape.fill")
+                            Text("Settings")
+                        }
+                }
+                .accentColor(.white)
             }
-            .accentColor(.white)
         }
+        .navigationTitle("Balance")
+
     }
 }
 

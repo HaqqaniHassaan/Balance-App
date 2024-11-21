@@ -134,29 +134,29 @@ struct FitnessDetailView: View {
                 .foregroundColor(.white)
                 .shadow(color: .black, radius: 0.1, x: 0, y: 1)
 
+            // Checkable Goal: Water Intake
             if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
                 GoalRow(
                     goalTitle: "Water Intake",
-                    progress: "\(waterIntake) gallons",
-                    goal: "\(waterGoal) gallons",
-                    isCompleted: waterIntake >= waterGoal
+                    progress: "\(waterIntake)", // Hidden in GoalRow for checkable goals
+                    goal: "\(waterGoal)",      // Hidden in GoalRow for checkable goals
+                    isCompleted: waterIntake >= waterGoal,
+                    isCheckable: true
                 ) {
-                    // Increment water intake and update Core Data
-                    if waterIntake < waterGoal {
-                        waterIntake += 1
-                        coreDataViewModel.updateWaterIntake(waterIntake)
-                    }
+                    waterIntake = waterGoal + 1 // Mark as completed
+                    coreDataViewModel.updateWaterIntake(waterIntake)
                 }
             }
 
+            // Incrementable Goal: Stretching
             if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
                 GoalRow(
                     goalTitle: "Stretching",
                     progress: "\(stretchingMinutes) min",
                     goal: "\(stretchingGoal) min",
-                    isCompleted: stretchingMinutes >= stretchingGoal
+                    isCompleted: stretchingMinutes >= stretchingGoal,
+                    isCheckable: false
                 ) {
-                    // Increment stretching minutes and update Core Data
                     if stretchingMinutes < stretchingGoal {
                         stretchingMinutes += 1
                         coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
@@ -165,6 +165,7 @@ struct FitnessDetailView: View {
             }
         }
     }
+
 
     // MARK: - Load Saved Data
     private func loadSavedData() {
