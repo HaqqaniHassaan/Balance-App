@@ -66,36 +66,28 @@ struct MentalHealthDetailView: View {
                             .shadow(color: .black.opacity(0.4), radius: 1, x: 0, y: 1)
 
                         if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
-                            GoalRow(
-                                goalTitle: "Daily Meditation",
-                                progress: "\(meditationMinutes) min",
-                                goal: "\(meditationGoal) min",
-                                isCompleted: meditationMinutes >= meditationGoal,
-                                isCheckable: false, // Incrementable goal
-                                action: {_ in 
-                                    if meditationMinutes < meditationGoal {
-                                        meditationMinutes += 1
-                                        coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
-                                    }
-                                }
-                            )
-                        }
+                                                   GoalRow(
+                                                       goalTitle: "Daily Meditation",
+                                                       progress: meditationMinutes,
+                                                       goal: meditationGoal,
+                                                       isCompleted: meditationMinutes >= meditationGoal,
+                                                       isCheckable: false
+                                                   ) { updatedProgress in
+                                                       meditationMinutes = updatedProgress
+                                                       coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
+                                                   }
+                                               }
+
 
                         if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
                             GoalRow(
                                 goalTitle: "Fresh Air",
-                                progress: "\(outdoorMinutes) min",
-                                goal: "\(outdoorGoal) min",
+                                progress: outdoorMinutes,
+                                goal: outdoorGoal,
                                 isCompleted: outdoorMinutes >= outdoorGoal,
-                                isCheckable: true // Checkable goal
-                            ) { isChecked in
-                                if isChecked {
-                                    // Mark as completed
-                                    outdoorMinutes = outdoorGoal + 1
-                                } else {
-                                    // Unmark completion
-                                    outdoorMinutes = max(0, outdoorGoal - 1)
-                                }
+                                isCheckable: true
+                            ) { updatedProgress in
+                                outdoorMinutes = updatedProgress
                                 coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
                             }
                         }

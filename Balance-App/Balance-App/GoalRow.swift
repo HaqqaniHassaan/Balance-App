@@ -1,49 +1,43 @@
-//
-//  GoalRow.swift
-//  Balance-App
-//
-//  Created by user264048 on 10/23/24.
-//
-
 import SwiftUI
 
 struct GoalRow: View {
     var goalTitle: String
-    var progress: String
-    var goal: String
+    var progress: Int
+    var goal: Int
     var isCompleted: Bool
-    var isCheckable: Bool // Distinguishes between checkable and incrementable goals
-    var action: (Bool) -> Void // Passes the toggle state (checked or unchecked) to the parent view
+    var isCheckable: Bool // Determines if the goal is checkable
+    var updateAction: (Int) -> Void // Passes the updated progress back to the parent view
 
-    @State private var isChecked: Bool = false // Local state to manage the checkable state
+    @State private var isChecked: Bool = false // Local state to track checkable goals
 
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(goalTitle)
                     .font(.headline)
-                    .foregroundColor(isChecked ? .white : .black)
-                Text(isCheckable ? "Check the box if you've completed this goal." : "\(progress) / \(goal)") // Show progress only for incrementable goals
-                    .font(.caption)
-                    .foregroundColor(isChecked ? .white : .gray)
+                    .foregroundColor(isCompleted ? .white : .black)
+
+                if isCheckable {
+                    Text("Tap the box to toggle completion.")
+                        .font(.caption)
+                        .foregroundColor(isCompleted ? .white : .gray)
+                } else {
+                    Text("\(progress) / \(goal)")
+                        .font(.caption)
+                        .foregroundColor(isCompleted ? .white : .gray)
+                }
             }
 
             Spacer()
 
-            // Checkable or Increment Button
             if isCheckable {
-                Button(action: {
-                    isChecked.toggle() // Toggle the check state
-                    action(isChecked) // Pass the new state to the parent
-                }) {
+                Button(action: toggleCheckableGoal) {
                     Image(systemName: isChecked ? "checkmark.square.fill" : "square")
                         .foregroundColor(isChecked ? .white : .blue)
                         .font(.title2)
                 }
             } else {
-                Button(action: {
-                    action(true) // Always increment for non-checkable goals
-                }) {
+                Button(action: incrementGoal) {
                     Image(systemName: isCompleted ? "checkmark.circle.fill" : "plus.circle.fill")
                         .foregroundColor(isCompleted ? .white : .blue)
                         .font(.title2)
@@ -53,11 +47,29 @@ struct GoalRow: View {
         .padding()
         .frame(maxWidth: 300, minHeight: 60)
         .background(
-            Color(isChecked || isCompleted ? UIColor.systemYellow : UIColor.systemGray6)
+            Color(isCompleted ? UIColor.systemYellow : UIColor.systemGray6)
                 .opacity(0.8)
-                .animation(.easeInOut, value: isChecked || isCompleted)
+                .animation(.easeInOut, value: isCompleted)
         )
         .cornerRadius(10)
-        .shadow(radius: isChecked || isCompleted ? 5 : 3)
+        .shadow(radius: isCompleted ? 5 : 3)
+        .onAppear {
+            isChecked = isCompleted
+        }
+    }
+
+    // MARK: - Functions
+
+    private func toggleCheckableGoal() {
+        isChecked.toggle()
+        let updatedProgress = isChecked ? goal + 1 : max(0, goal - 1) // Update progress based on state
+        updateAction(updatedProgress) // Pass the updated progress back to the parent view
+    }
+
+    private func incrementGoal() {
+        if progress < goal {
+            let updatedProgress = progress + 1
+            updateAction(updatedProgress) // Pass the updated progress back to the parent view
+        }
     }
 }

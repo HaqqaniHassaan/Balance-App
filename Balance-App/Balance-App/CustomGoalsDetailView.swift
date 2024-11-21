@@ -69,24 +69,15 @@ struct GoalsOverviewView: View {
                 .foregroundColor(.white)
                 .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
 
-
             ForEach(customGoals, id: \.self) { goal in
                 GoalRow(
                     goalTitle: goal.name ?? "Unnamed Goal",
-                    progress: "\(goal.progress)",
-                    goal: "\(goal.target)",
+                    progress: Int(goal.progress),
+                    goal: Int(goal.target),
                     isCompleted: goal.progress >= goal.target,
                     isCheckable: goal.isCheckable
-                ) {_ in 
-                    if goal.isCheckable {
-                        // Mark goal as completed by setting progress to target
-                        coreDataViewModel.updateGoalProgress(goal, progress: goal.target)
-                    } else {
-                        // Increment progress for incrementable goals
-                        if goal.progress < goal.target {
-                            coreDataViewModel.updateGoalProgress(goal, progress: goal.progress + 1)
-                        }
-                    }
+                ) { updatedProgress in
+                    coreDataViewModel.updateGoalProgress(goal, progress: Int64(updatedProgress))
                     onUpdateGoals() // Refresh goals after updating progress
                 }
             }
@@ -97,8 +88,4 @@ struct GoalsOverviewView: View {
         .shadow(radius: 5)
         .frame(maxWidth: 350) // Constrain the width
     }
-}
-
-#Preview {
-    CustomGoalsDetailView(coreDataViewModel: CoreDataViewModel())
 }

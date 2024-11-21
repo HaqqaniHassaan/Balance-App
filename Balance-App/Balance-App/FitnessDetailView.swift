@@ -131,38 +131,31 @@ struct FitnessDetailView: View {
 
             // Checkable Goal: Water Intake
             if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
-                       GoalRow(
-                           goalTitle: "Water Intake",
-                           progress: "\(waterIntake)", // Hidden in GoalRow for checkable goals
-                           goal: "\(waterGoal)",      // Hidden in GoalRow for checkable goals
-                           isCompleted: waterIntake >= waterGoal,
-                           isCheckable: true
-                       ) { isChecked in
-                           if isChecked {
-                               // Mark as completed
-                               waterIntake = waterGoal + 1
-                           } else {
-                               // Unmark completion
-                               waterIntake = max(0, waterGoal - 1) // Ensure waterIntake doesn't go below 0
-                           }
-                           coreDataViewModel.updateWaterIntake(waterIntake)
-                       }
-                   }
-            // Incrementable Goal: Stretching
+                GoalRow(
+                    goalTitle: "Water Intake",
+                    progress: waterIntake,
+                    goal: waterGoal,
+                    isCompleted: waterIntake >= waterGoal,
+                    isCheckable: true
+                ) { updatedProgress in
+                    waterIntake = updatedProgress
+                    coreDataViewModel.updateWaterIntake(waterIntake)
+                }
+            }
+
             if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
                 GoalRow(
                     goalTitle: "Stretching",
-                    progress: "\(stretchingMinutes) min",
-                    goal: "\(stretchingGoal) min",
+                    progress: stretchingMinutes,
+                    goal: stretchingGoal,
                     isCompleted: stretchingMinutes >= stretchingGoal,
                     isCheckable: false
-                ) {_ in 
-                    if stretchingMinutes < stretchingGoal {
-                        stretchingMinutes += 1
-                        coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
-                    }
+                ) { updatedProgress in
+                    stretchingMinutes = updatedProgress
+                    coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
                 }
             }
+
         }
     }
 
