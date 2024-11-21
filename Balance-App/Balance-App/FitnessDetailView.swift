@@ -2,137 +2,132 @@ import SwiftUI
 
 struct FitnessDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
-    @Environment(\.verticalSizeClass) var verticalSizeClass // Detect orientation
 
-    // Bind water intake and stretching minutes to Core Data
-    @State private var waterIntake: Int = 0
-    @State private var stretchingMinutes: Int = 0
-
-    // State variables for HealthKit data
     @State private var stepsWalked: Int = 0
     @State private var caloriesBurned: Int = 0
     @State private var exerciseMinutes: Int = 0
+    @State private var sleepMinutes: Int = 0
+    @State private var waterIntake: Int = 0
+    @State private var stretchingMinutes: Int = 0
 
-    // Placeholder goals
-    private let stepGoal = 10000
-    private let calorieGoal = 600
-    private let exerciseGoal = 30
-    private let waterGoal = 4 // 4 gallons
-    private let stretchingGoal = 15 // 15 minutes
+    // Goals
+    private let calorieGoal = 2000 // Calories
+    private let exerciseGoal = 30 // Exercise minutes
+    private let sleepGoal = 480  // Sleep goal in minutes (8 hours)
+    private let waterGoal = 4    // Water intake goal (in gallons)
+    private let stretchingGoal = 15 // Stretching goal (in minutes)
 
     var body: some View {
-        ZStack {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 30) {
+                // Title
+                Text("Today's Fitness")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.white)
+                    .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
+                    .padding(.top)
+
+                // Radial Progress View
+                radialProgressView
+                    .padding()
+                    .background(Color(UIColor.systemGray6).opacity(0.8))
+                    .cornerRadius(15)
+                    .shadow(radius: 5)
+
+                // Goals Overview (GoalRows)
+                goalsOverview
+                    .padding()
+                    .cornerRadius(15)
+                    .shadow(radius: 5)
+
+                Spacer()
+            }
+            .padding()
+        }
+        .background(
             Image("background_image")
                 .resizable()
                 .scaledToFill()
-                .frame(minWidth: 0)
                 .ignoresSafeArea()
-
-            if verticalSizeClass == .regular {
-                // Portrait Mode
-                VStack(spacing: 20) {
-                    contentTitle
-
-                    healthKitProgressSummary
-                        .padding()
-                        .background(Color(UIColor.systemGray6).opacity(0.8))
-                        .cornerRadius(15)
-                        .shadow(radius: 5)
-
-                    goalsOverview
-                        .padding()
-
-                    Spacer()
-                }
-                .padding()
-            } else {
-                // Landscape Mode
-                VStack {
-                    
-                    contentTitle
-                        .frame(maxWidth: .infinity, alignment: .center) // Center align in landscape
-                        .padding()
-                    HStack( spacing: 20) {
-                        healthKitProgressSummary
-                            .padding()
-                        
-                            .background(Color(UIColor.systemGray6).opacity(0.8))
-                            .cornerRadius(15)
-                            .shadow(radius: 5)
-                        
-                        goalsOverview
-                            .padding()
-                    }
-
-                    Spacer()
-                }
-                .padding()
-            }
-        }
+        )
         .onAppear {
-            // Load saved data from Core Data
-            loadSavedData()
-
-            // Fetch initial HealthKit data
             fetchHealthData()
+            loadSavedData()
         }
     }
 
-    // MARK: - Components
+    // MARK: - Radial Progress View
+    private var radialProgressView: some View {
+        HStack {
+            Spacer()
+            
+            // Left Column with Metrics
+            VStack(alignment: .leading, spacing: 12) {
+                metricRow(title: "Calories", value: "\(caloriesBurned) kcal", color: .red)
+                metricRow(title: "Activity", value: "\(exerciseMinutes) mins", color: .green)
+                metricRow(title: "Sleep", value: "\(sleepMinutes / 60) hours", color: .blue)
+            }
+            Spacer()
 
-    // Title
-    private var contentTitle: some View {
-        Text("Today's Fitness")
-            .font(.largeTitle)
-            .bold()
-            .padding(.top)
-            .foregroundColor(.white)
-            .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+            // Radial Progress Circle
+            ZStack {
+                // Calories Circle
+                Circle()
+                    .stroke(.red.opacity(0.3), lineWidth: 20)
+                Circle()
+                    .trim(from: 0, to: min(Double(caloriesBurned) / Double(calorieGoal), 1.0))
+                    .stroke(.red, style: StrokeStyle(lineWidth: 20, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                
+                // Active Time Circle
+                Circle()
+                    .stroke(.green.opacity(0.3), lineWidth: 15)
+                    .padding(10)
+                Circle()
+                    .trim(from: 0, to: min(Double(exerciseMinutes) / Double(exerciseGoal), 1.0))
+                    .stroke(.green, style: StrokeStyle(lineWidth: 15, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .padding(10)
+                
+                // Sleep Circle
+                Circle()
+                    .stroke(.blue.opacity(0.3), lineWidth: 10)
+                    .padding(20)
+                Circle()
+                    .trim(from: 0, to: min(Double(sleepMinutes) / Double(sleepGoal), 1.0))
+                    .stroke(.blue, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .padding(20)
+            }
+            .frame(width: 150, height: 150) // Adjust size as needed
+            
+            Spacer()
+        }
+        .frame(maxWidth: 300, maxHeight: 200)
     }
 
-    // HealthKit Progress Summary
-    private var healthKitProgressSummary: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            if coreDataViewModel.fitnessEntity?.isStepsTracked == true {
-                HStack {
-                    ProgressView("Daily Steps", value: Double(stepsWalked), total: Double(stepGoal))
-                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                    Text("\(stepsWalked)/\(stepGoal) steps")
-                        .font(.caption)
-                        .foregroundColor(.black)
-                }
-            }
-
-            if coreDataViewModel.fitnessEntity?.isCaloriesTracked == true {
-                HStack {
-                    ProgressView("Calories Burned", value: Double(caloriesBurned), total: Double(calorieGoal))
-                        .progressViewStyle(LinearProgressViewStyle(tint: .red))
-                    Text("\(caloriesBurned)/\(calorieGoal) CAL")
-                        .font(.caption)
-                        .foregroundColor(.black)
-                }
-            }
-
-            if coreDataViewModel.fitnessEntity?.isWorkoutTracked == true {
-                HStack {
-                    ProgressView("Exercise Time", value: Double(exerciseMinutes), total: Double(exerciseGoal))
-                        .progressViewStyle(LinearProgressViewStyle(tint: .orange))
-                    Text("\(exerciseMinutes)/\(exerciseGoal) MIN")
-                        .font(.caption)
-                        .foregroundColor(.black)
-                }
-            }
+    // MARK: - Metric Row
+    private func metricRow(title: String, value: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title)
+                .font(.callout)
+                .bold()
+                .foregroundColor(color)
+                .shadow(color: .black.opacity(0.2), radius: 1, x: 0, y: 1)
+            Text(value)
+                .bold()
         }
     }
 
-    // Goals Overview
+    // MARK: - Goals Overview (GoalRows)
     private var goalsOverview: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Goals")
+            Text("Your Goals")
                 .font(.title2)
                 .bold()
                 .foregroundColor(.white)
-                .shadow(color: .black, radius: 0.1, x: 0, y: 1)
+                .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
 
             // Checkable Goal: Water Intake
             if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
@@ -166,7 +161,6 @@ struct FitnessDetailView: View {
         }
     }
 
-
     // MARK: - Load Saved Data
     private func loadSavedData() {
         if let savedWaterIntake = coreDataViewModel.fitnessEntity?.waterIntake {
@@ -179,36 +173,27 @@ struct FitnessDetailView: View {
 
     // MARK: - Fetch Health Data
     private func fetchHealthData() {
-        // Fetch step count
-        HealthKitManager.shared.fetchStepCount { steps, error in
+        HealthKitManager.shared.fetchStepCount { steps, _ in
             DispatchQueue.main.async {
-                if let steps = steps {
-                    self.stepsWalked = Int(steps)
-                } else {
-                    print("Error fetching steps: \(String(describing: error))")
-                }
+                self.stepsWalked = Int(steps ?? 0)
             }
         }
 
-        // Fetch active energy burned
-        HealthKitManager.shared.fetchActiveEnergyBurned { calories, error in
+        HealthKitManager.shared.fetchActiveEnergyBurned { calories, _ in
             DispatchQueue.main.async {
-                if let calories = calories {
-                    self.caloriesBurned = Int(calories)
-                } else {
-                    print("Error fetching calories burned: \(String(describing: error))")
-                }
+                self.caloriesBurned = Int(calories ?? 0)
             }
         }
 
-        // Fetch exercise time
-        HealthKitManager.shared.fetchExerciseTime { exerciseTime, error in
+        HealthKitManager.shared.fetchExerciseTime { exerciseTime, _ in
             DispatchQueue.main.async {
-                if let exerciseTime = exerciseTime {
-                    self.exerciseMinutes = Int(exerciseTime)
-                } else {
-                    print("Error fetching exercise time: \(String(describing: error))")
-                }
+                self.exerciseMinutes = Int(exerciseTime ?? 0)
+            }
+        }
+
+        HealthKitManager.shared.fetchSleepData { sleepTime, _ in
+            DispatchQueue.main.async {
+                self.sleepMinutes = Int(sleepTime ?? 0)
             }
         }
     }

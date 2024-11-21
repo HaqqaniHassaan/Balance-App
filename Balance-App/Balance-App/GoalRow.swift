@@ -51,7 +51,7 @@ struct GoalRow: View {
             }
         }
         .padding()
-        .frame(maxWidth: .infinity, minHeight: 60)
+        .frame(maxWidth: 300, minHeight: 60)
         .background(
             Color(isCompleted ? UIColor.systemYellow : UIColor.systemGray6)
                 .opacity(0.8)
