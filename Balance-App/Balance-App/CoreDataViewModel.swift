@@ -172,6 +172,29 @@ class CoreDataViewModel: ObservableObject {
         mentalHealthEntity?[keyPath: keyPath] = value
         saveData()
     }
+    // Update Family Call Minutes
+    func updateFamilyCallMinutes(_ value: Int) {
+        mentalHealthEntity?.familyCallMinutes = Int64(value)
+        saveData()
+    }
+
+    // Update Mindful Breathing Minutes
+    func updateMindfulBreathingMinutes(_ value: Int) {
+        mentalHealthEntity?.mindfulBreathingMinutes = Int64(value)
+        saveData()
+    }
+
+    // Update Screen-Off Minutes
+    func updateScreenOffMinutes(_ value: Int) {
+        mentalHealthEntity?.screenOffMinutes = Int64(value)
+        saveData()
+    }
+    // Update Tracking Booleans for MentalHealth Goals
+    func updateMentalHealthTracking(for attribute: WritableKeyPath<MentalHealthEntity, Bool>, value: Bool) {
+        mentalHealthEntity?[keyPath: attribute] = value
+        saveData()
+    }
+
 
     // Add this to CoreDataViewModel
     func addCustomGoal(name: String, target: Int64, isCheckable: Bool = false) {

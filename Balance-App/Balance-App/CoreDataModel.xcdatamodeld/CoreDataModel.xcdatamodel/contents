@@ -37,11 +37,17 @@
         <relationship name="customGoalsEntity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CustomGoalsEntity" inverseName="goals" inverseEntity="CustomGoalsEntity"/>
     </entity>
     <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="familyCallMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isFamilyCallTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isMeditationTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isMindfulBreathingTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isOutdoorTimeTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isScreenOffTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="meditationGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="meditationMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="mindfulBreathingMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="outdoorGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="outdoorMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="screenOffMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
 </model>
