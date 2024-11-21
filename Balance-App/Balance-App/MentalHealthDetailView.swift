@@ -24,7 +24,7 @@ struct MentalHealthDetailView: View {
                         .font(.largeTitle)
                         .bold()
                         .foregroundColor(.white)
-                        .shadow(color: .black, radius: 0.05, x: 0, y: 2)
+                        .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
                         .padding(.top, 20) // Add padding for better spacing
 
                     // Progress Summary
@@ -63,7 +63,7 @@ struct MentalHealthDetailView: View {
                             .font(.title2)
                             .bold()
                             .foregroundColor(.white)
-                            .shadow(color: .black, radius: 0.05, x: 0, y: 1)
+                            .shadow(color: .black.opacity(0.4), radius: 1, x: 0, y: 1)
 
                         if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
                             GoalRow(
@@ -72,7 +72,7 @@ struct MentalHealthDetailView: View {
                                 goal: "\(meditationGoal) min",
                                 isCompleted: meditationMinutes >= meditationGoal,
                                 isCheckable: false, // Incrementable goal
-                                action: {
+                                action: {_ in 
                                     if meditationMinutes < meditationGoal {
                                         meditationMinutes += 1
                                         coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
@@ -88,17 +88,22 @@ struct MentalHealthDetailView: View {
                                 goal: "\(outdoorGoal) min",
                                 isCompleted: outdoorMinutes >= outdoorGoal,
                                 isCheckable: true // Checkable goal
-                            ) {
-                                outdoorMinutes = outdoorGoal + 1 // Mark as completed
+                            ) { isChecked in
+                                if isChecked {
+                                    // Mark as completed
+                                    outdoorMinutes = outdoorGoal + 1
+                                } else {
+                                    // Unmark completion
+                                    outdoorMinutes = max(0, outdoorGoal - 1)
+                                }
                                 coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
                             }
                         }
                     }
                     .padding()
-                    .background(Color(UIColor.systemGray6).opacity(0.8))
                     .cornerRadius(15)
                     .shadow(radius: 5)
-                    .frame(maxWidth: 350) // Constrain the width
+                    .frame(maxWidth: 450) // Constrain the width
                 }
                 .padding()
                 .frame(maxWidth: .infinity) // Center the content

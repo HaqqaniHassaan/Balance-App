@@ -50,6 +50,7 @@ struct CustomGoalsTitleView: View {
             .font(.largeTitle)
             .bold()
             .foregroundColor(.white)
+            .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
             .padding(.top, 20)
     }
 }
@@ -66,6 +67,8 @@ struct GoalsOverviewView: View {
                 .font(.title2)
                 .bold()
                 .foregroundColor(.white)
+                .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
+
 
             ForEach(customGoals, id: \.self) { goal in
                 GoalRow(
@@ -74,7 +77,7 @@ struct GoalsOverviewView: View {
                     goal: "\(goal.target)",
                     isCompleted: goal.progress >= goal.target,
                     isCheckable: goal.isCheckable
-                ) {
+                ) {_ in 
                     if goal.isCheckable {
                         // Mark goal as completed by setting progress to target
                         coreDataViewModel.updateGoalProgress(goal, progress: goal.target)

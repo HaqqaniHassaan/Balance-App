@@ -131,18 +131,23 @@ struct FitnessDetailView: View {
 
             // Checkable Goal: Water Intake
             if coreDataViewModel.fitnessEntity?.isWaterTracked == true {
-                GoalRow(
-                    goalTitle: "Water Intake",
-                    progress: "\(waterIntake)", // Hidden in GoalRow for checkable goals
-                    goal: "\(waterGoal)",      // Hidden in GoalRow for checkable goals
-                    isCompleted: waterIntake >= waterGoal,
-                    isCheckable: true
-                ) {
-                    waterIntake = waterGoal + 1 // Mark as completed
-                    coreDataViewModel.updateWaterIntake(waterIntake)
-                }
-            }
-
+                       GoalRow(
+                           goalTitle: "Water Intake",
+                           progress: "\(waterIntake)", // Hidden in GoalRow for checkable goals
+                           goal: "\(waterGoal)",      // Hidden in GoalRow for checkable goals
+                           isCompleted: waterIntake >= waterGoal,
+                           isCheckable: true
+                       ) { isChecked in
+                           if isChecked {
+                               // Mark as completed
+                               waterIntake = waterGoal + 1
+                           } else {
+                               // Unmark completion
+                               waterIntake = max(0, waterGoal - 1) // Ensure waterIntake doesn't go below 0
+                           }
+                           coreDataViewModel.updateWaterIntake(waterIntake)
+                       }
+                   }
             // Incrementable Goal: Stretching
             if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
                 GoalRow(
@@ -151,7 +156,7 @@ struct FitnessDetailView: View {
                     goal: "\(stretchingGoal) min",
                     isCompleted: stretchingMinutes >= stretchingGoal,
                     isCheckable: false
-                ) {
+                ) {_ in 
                     if stretchingMinutes < stretchingGoal {
                         stretchingMinutes += 1
                         coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
