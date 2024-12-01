@@ -69,7 +69,7 @@ struct GoalsOverviewView: View {
     let customGoals: [Goal]
     let coreDataViewModel: CoreDataViewModel
     let onUpdateGoals: () -> Void
-    @Binding var showDeleteButtonForGoal: NSManagedObjectID? // Use NSManagedObjectID directly
+    @Binding var showDeleteButtonForGoal: NSManagedObjectID?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -117,7 +117,6 @@ struct GoalsOverviewView: View {
             }
         }
         .padding()
-        .background(Color(UIColor.systemGray6).opacity(0.8))
         .cornerRadius(15)
         .shadow(radius: 5)
         .frame(maxWidth: 350)
@@ -160,14 +159,23 @@ struct AddGoalView: View {
             // Optionally, show an alert if validation fails
             return
         }
-        coreDataViewModel.addCustomGoal(name: goalName, target: target)
+        coreDataViewModel.addCustomGoal(name: goalName, target: target, isCheckable: isCheckable)
         onSave()
         dismiss()
     }
 }
 
 // MARK: - Title View
-
+struct CustomGoalsTitleView: View {
+    var body: some View {
+        Text("Today's Custom Goals")
+            .font(.largeTitle)
+            .bold()
+            .foregroundColor(.white)
+            .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
+            .padding(.top, 20)
+    }
+}
 
 #Preview {
     CustomGoalsDetailView(coreDataViewModel: CoreDataViewModel())

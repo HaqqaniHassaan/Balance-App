@@ -43,6 +43,7 @@ struct ContentView: View {
                             Image(systemName: "gearshape.fill")
                             Text("Settings")
                         }
+
                 }
                 .accentColor(.white)
             }

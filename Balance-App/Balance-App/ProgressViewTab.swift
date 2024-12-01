@@ -22,7 +22,7 @@ struct ProgressViewTab: View {
                         .font(.title)
                         .foregroundColor(.white)
                         .bold()
-                        .shadow(color: .black, radius: 0.1, x: 0, y: 2)
+                        .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
                         .padding()
 
                     // Grid layout
@@ -34,7 +34,11 @@ struct ProgressViewTab: View {
                         progressGrid(columns: 10, circleSize: 30, fontSize: .caption2)
                     }
                 }
+                .background(Color(UIColor.systemGray6).opacity(0.8))
+                .cornerRadius(15)
+                .shadow(radius: 5)
                 .padding()
+
             }
         }
     }
@@ -62,6 +66,7 @@ struct ProgressViewTab: View {
                     Text("\(day)")
                         .font(fontSize)
                         .foregroundColor(.white)
+                        .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
                 }
             }
         }
