@@ -8,8 +8,6 @@ struct GoalRow: View {
     var isCheckable: Bool // Determines if the goal is checkable
     var updateAction: (Int) -> Void // Passes the updated progress back to the parent view
 
-    @State private var isChecked: Bool = false // Local state to track checkable goals
-
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -32,8 +30,8 @@ struct GoalRow: View {
 
             if isCheckable {
                 Button(action: toggleCheckableGoal) {
-                    Image(systemName: isChecked ? "checkmark.square.fill" : "square")
-                        .foregroundColor(isChecked ? .white : .blue)
+                    Image(systemName: isCompleted ? "checkmark.square.fill" : "square")
+                        .foregroundColor(isCompleted ? .white : .blue)
                         .font(.title2)
                 }
             } else {
@@ -53,16 +51,13 @@ struct GoalRow: View {
         )
         .cornerRadius(10)
         .shadow(radius: isCompleted ? 5 : 3)
-        .onAppear {
-            isChecked = isCompleted
-        }
     }
 
     // MARK: - Functions
 
     private func toggleCheckableGoal() {
-        isChecked.toggle()
-        let updatedProgress = isChecked ? goal + 1 : max(0, goal - 1) // Update progress based on state
+        // Toggle the completion status
+        let updatedProgress = isCompleted ? max(0, goal - 1) : goal
         updateAction(updatedProgress) // Pass the updated progress back to the parent view
     }
 
