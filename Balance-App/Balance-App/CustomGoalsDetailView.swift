@@ -5,6 +5,7 @@ struct CustomGoalsDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
 
     @State private var customGoals: [Goal] = [] // Custom goals fetched from Core Data
+    @State private var goalProgress: [NSManagedObjectID: Int] = [:] // Tracks progress for each goal
     @State private var isAddingGoal = false // Controls the sheet for adding a goal
     @State private var showDeleteButtonForGoal: NSManagedObjectID? = nil
 
@@ -24,6 +25,7 @@ struct CustomGoalsDetailView: View {
                     // Goals Overview
                     GoalsOverviewView(
                         customGoals: customGoals,
+                        goalProgress: $goalProgress,
                         coreDataViewModel: coreDataViewModel,
                         onUpdateGoals: loadCustomGoals,
                         showDeleteButtonForGoal: $showDeleteButtonForGoal
@@ -58,15 +60,17 @@ struct CustomGoalsDetailView: View {
     }
 
     // MARK: - Helper Functions
-    /// Fetches the custom goals from Core Data
+    /// Fetches the custom goals from Core Data and initializes progress tracking
     private func loadCustomGoals() {
         customGoals = coreDataViewModel.fetchCustomGoals()
+        goalProgress = Dictionary(uniqueKeysWithValues: customGoals.map { ($0.objectID, Int($0.progress)) })
     }
 }
 
 // MARK: - Goals Overview View
 struct GoalsOverviewView: View {
     let customGoals: [Goal]
+    @Binding var goalProgress: [NSManagedObjectID: Int]
     let coreDataViewModel: CoreDataViewModel
     let onUpdateGoals: () -> Void
     @Binding var showDeleteButtonForGoal: NSManagedObjectID?
@@ -81,17 +85,17 @@ struct GoalsOverviewView: View {
 
             ForEach(customGoals, id: \.self) { goal in
                 HStack {
-                    // Handle optional properties with default values
+                    // Use progress from the binding
                     GoalRow(
                         goalTitle: goal.name ?? "Unnamed Goal",
-                        progress: Int(goal.progress),
+                        progress: goalProgress[goal.objectID] ?? 0,
                         goal: Int(goal.target),
-                        isCompleted: goal.progress >= goal.target,
+                        isCompleted: (goalProgress[goal.objectID] ?? 0) >= Int(goal.target),
                         isCheckable: goal.isCheckable
                     ) { updatedProgress in
-                        // Update progress and refresh the view
+                        // Update progress in local state and Core Data
+                        goalProgress[goal.objectID] = updatedProgress
                         coreDataViewModel.updateGoalProgress(goal, progress: Int64(updatedProgress))
-                        onUpdateGoals()
                     }
                     .onLongPressGesture {
                         // Toggle delete button visibility
