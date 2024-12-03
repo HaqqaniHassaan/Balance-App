@@ -6,7 +6,11 @@ struct GoalRow: View {
     var goal: Int
     var isCompleted: Bool
     var isCheckable: Bool // Determines if the goal is checkable
+    var currentStreak: Int = 0 // Default value for backward compatibility
+    var longestStreak: Int = 0 // Default value for backward compatibility
     var updateAction: (Int) -> Void // Passes the updated progress back to the parent view
+
+    @State private var isChecked: Bool = false // Local state to track checkable goals
 
     var body: some View {
         HStack {
@@ -24,14 +28,32 @@ struct GoalRow: View {
                         .font(.caption)
                         .foregroundColor(isCompleted ? .white : .gray)
                 }
+
+                // Streak Display
+                if currentStreak > 0 || longestStreak > 0 {
+                    VStack(alignment: .leading, spacing: 5) {
+                        if currentStreak > 0 {
+                            Text("Current Streak: \(currentStreak) days")
+                                .font(.caption2)
+                                .foregroundColor(.green)
+                                .italic()
+                        }
+                        if longestStreak > 0 {
+                            Text("Longest Streak: \(longestStreak) days")
+                                .font(.caption2)
+                                .foregroundColor(.blue)
+                                .italic()
+                        }
+                    }
+                }
             }
 
             Spacer()
 
             if isCheckable {
                 Button(action: toggleCheckableGoal) {
-                    Image(systemName: isCompleted ? "checkmark.square.fill" : "square")
-                        .foregroundColor(isCompleted ? .white : .blue)
+                    Image(systemName: isChecked ? "checkmark.square.fill" : "square")
+                        .foregroundColor(isChecked ? .white : .blue)
                         .font(.title2)
                 }
             } else {
@@ -51,13 +73,16 @@ struct GoalRow: View {
         )
         .cornerRadius(10)
         .shadow(radius: isCompleted ? 5 : 3)
+        .onAppear {
+            isChecked = isCompleted
+        }
     }
 
     // MARK: - Functions
 
     private func toggleCheckableGoal() {
-        // Toggle the completion status
-        let updatedProgress = isCompleted ? max(0, goal - 1) : goal
+        isChecked.toggle()
+        let updatedProgress = isChecked ? goal + 1 : max(0, goal - 1) // Update progress based on state
         updateAction(updatedProgress) // Pass the updated progress back to the parent view
     }
 

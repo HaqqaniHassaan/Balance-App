@@ -9,6 +9,8 @@ struct FitnessDetailView: View {
     @State private var sleepMinutes: Int = 0
     @State private var waterIntake: Int = 0
     @State private var stretchingMinutes: Int = 0
+    @State private var waterCurrentStreak: Int = 0
+    @State private var waterLongestStreak: Int = 0
 
     // Goals
     private let calorieGoal = 2000 // Calories
@@ -54,6 +56,7 @@ struct FitnessDetailView: View {
         .onAppear {
             fetchHealthData()
             loadSavedData()
+            loadStreaks()
         }
     }
 
@@ -136,13 +139,25 @@ struct FitnessDetailView: View {
                     progress: waterIntake,
                     goal: waterGoal,
                     isCompleted: waterIntake >= waterGoal,
-                    isCheckable: true
+                    isCheckable: true,
+                    currentStreak: waterCurrentStreak,
+                    longestStreak: waterLongestStreak
                 ) { updatedProgress in
                     waterIntake = updatedProgress
                     coreDataViewModel.updateWaterIntake(waterIntake)
+
+                    // Update streaks
+                    coreDataViewModel.updateEntityStreaks(
+                        entity: coreDataViewModel.fitnessEntity!,
+                        streakKey: "waterIntake",
+                        didComplete: waterIntake >= waterGoal
+                    )
+                    // Refresh streaks
+                    loadStreaks()
                 }
             }
 
+            // Stretching Goal
             if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
                 GoalRow(
                     goalTitle: "Stretching",
@@ -155,7 +170,14 @@ struct FitnessDetailView: View {
                     coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
                 }
             }
+        }
+    }
 
+    // MARK: - Load Streaks
+    private func loadStreaks() {
+        if let streaks = coreDataViewModel.fetchStreaks(forEntity: .fitness, streakKey: "waterIntake") {
+            waterCurrentStreak = streaks.current
+            waterLongestStreak = streaks.longest
         }
     }
 

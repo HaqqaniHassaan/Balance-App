@@ -219,6 +219,110 @@ class CoreDataViewModel: ObservableObject {
         goal.progress = progress
         saveData()
     }
+    func fetchStreaks(forEntity entity: GoalEntityType, streakKey: String) -> (current: Int, longest: Int)? {
+        switch entity {
+        case .fitness:
+            guard let fitnessEntity = fitnessEntity else { return nil }
+            return fetchEntityStreaks(entity: fitnessEntity, streakKey: streakKey)
+        case .mentalHealth:
+            guard let mentalHealthEntity = mentalHealthEntity else { return nil }
+            return fetchEntityStreaks(entity: mentalHealthEntity, streakKey: streakKey)
+        case .customGoals:
+            guard let customGoalsEntity = customGoalsEntity else { return nil }
+            return fetchEntityStreaks(entity: customGoalsEntity, streakKey: streakKey)
+        }
+    }
+
+
+    private func fetchEntityStreaks<T: NSManagedObject>(entity: T, streakKey: String) -> (current: Int, longest: Int)? {
+        guard let streaksDict = entity.value(forKey: "streaks") as? [String: [String: Int]] else { return nil }
+        let current = streaksDict[streakKey]?["current"] ?? 0
+        let longest = streaksDict[streakKey]?["longest"] ?? 0
+        return (current: current, longest: longest)
+    }
+
+
+    // Update Streak
+    func updateStreak(for entity: String, goalKey: String, streakValue: Int) {
+        switch entity {
+        case "Fitness":
+            if fitnessEntity?.streaks == nil {
+                fitnessEntity?.streaks = [:] as NSDictionary
+            }
+            var currentStreaks = fitnessEntity?.streaks as? [String: Int] ?? [:]
+            currentStreaks[goalKey] = streakValue
+            fitnessEntity?.streaks = currentStreaks as NSDictionary
+        case "MentalHealth":
+            if mentalHealthEntity?.streaks == nil {
+                mentalHealthEntity?.streaks = [:] as NSDictionary
+            }
+            var currentStreaks = mentalHealthEntity?.streaks as? [String: Int] ?? [:]
+            currentStreaks[goalKey] = streakValue
+            mentalHealthEntity?.streaks = currentStreaks as NSDictionary
+        case "CustomGoals":
+            if customGoalsEntity?.streaks == nil {
+                customGoalsEntity?.streaks = [:] as NSDictionary
+            }
+            var currentStreaks = customGoalsEntity?.streaks as? [String: Int] ?? [:]
+            currentStreaks[goalKey] = streakValue
+            customGoalsEntity?.streaks = currentStreaks as NSDictionary
+        default:
+            break
+        }
+        saveData()
+    }
+    enum GoalEntityType {
+        case fitness
+        case mentalHealth
+        case customGoals
+    }
+
+    // Reset Streak
+    func resetStreak(for entity: String, goalKey: String) {
+        updateStreak(for: entity, goalKey: goalKey, streakValue: 0)
+    }
+
+    // Increment Streak
+    func incrementStreak(for entity: GoalEntityType, streakKey: String) {
+        // Fetch existing streaks or initialize them
+        guard let streaks = fetchStreaks(forEntity: entity, streakKey: streakKey) else {
+            if let entityObject = getEntity(for: entity) {
+                updateEntityStreaks(
+                    entity: entityObject,
+                    streakKey: streakKey,
+                    didComplete: true
+                )
+            }
+            return
+        }
+        
+        // Update streaks
+        let newCurrentStreak = streaks.current + 1
+        let newLongestStreak = max(streaks.longest, newCurrentStreak)
+
+        // Safely unwrap entity
+        if let entityObject = getEntity(for: entity) {
+            updateEntityStreaks(
+                entity: entityObject,
+                streakKey: streakKey,
+                didComplete: true
+            )
+        } else {
+            print("Error: Entity object for \(entity) is nil.")
+        }
+    }
+
+    private func getEntity(for entityType: GoalEntityType) -> NSManagedObject? {
+        switch entityType {
+        case .fitness:
+            return fitnessEntity
+        case .mentalHealth:
+            return mentalHealthEntity
+        case .customGoals:
+            return customGoalsEntity
+        }
+    }
+
 
 
     func fetchCustomGoals() -> [Goal] {
@@ -238,4 +342,29 @@ class CoreDataViewModel: ObservableObject {
     func isOnboardingCompleted() -> Bool {
         return customGoalsEntity?.isOnboardingComplete ?? false
     }
+    
+     func updateEntityStreaks<T: NSManagedObject>(entity: T, streakKey: String, didComplete: Bool) {
+        guard var streaksDict = entity.value(forKey: "streaks") as? [String: [String: Int]] else {
+            let newStreak = ["current": didComplete ? 1 : 0, "longest": didComplete ? 1 : 0]
+            entity.setValue([streakKey: newStreak], forKey: "streaks")
+            saveData()
+            return
+        }
+
+        var currentStreak = streaksDict[streakKey]?["current"] ?? 0
+        var longestStreak = streaksDict[streakKey]?["longest"] ?? 0
+
+        if didComplete {
+            currentStreak += 1
+            longestStreak = max(longestStreak, currentStreak)
+        } else {
+            currentStreak = 0
+        }
+
+        streaksDict[streakKey] = ["current": currentStreak, "longest": longestStreak]
+        entity.setValue(streaksDict, forKey: "streaks")
+        saveData()
+    }
+
+
 }
