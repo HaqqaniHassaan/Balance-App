@@ -33,16 +33,22 @@ struct GoalRow: View {
                 if currentStreak > 0 || longestStreak > 0 {
                     VStack(alignment: .leading, spacing: 5) {
                         if currentStreak > 0 {
-                            Text("Current Streak: \(currentStreak) days")
-                                .font(.caption2)
-                                .foregroundColor(.green)
-                                .italic()
+                            HStack(spacing: 5) {
+                                Text("Current Streak: \(currentStreak) days")
+                                    .font(.caption2)
+                                    .foregroundColor(.green)
+                                    .italic()
+                                    .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
+                            }
                         }
                         if longestStreak > 0 {
-                            Text("Longest Streak: \(longestStreak) days")
-                                .font(.caption2)
-                                .foregroundColor(.blue)
-                                .italic()
+                            HStack(spacing: 5) {
+                                Text("Longest Streak: \(longestStreak) days")
+                                    .font(.caption2)
+                                    .foregroundColor(.cyan)
+                                    .italic()
+                                    .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
+                            }
                         }
                     }
                 }
