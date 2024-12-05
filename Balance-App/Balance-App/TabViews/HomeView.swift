@@ -21,17 +21,17 @@ struct HomeView: View {
                     VStack(spacing: 20) {
                         // Physical Health Widget
                         NavigationLink(destination: FitnessDetailView(coreDataViewModel: coreDataViewModel)) {
-                            WidgetView(title: "Today's Physical Health", backgroundColor: .green, icon: "figure.walk.circle.fill")
+                            WidgetView(title: "Today's Physical Health", backgroundColor: .red, icon: "figure.walk.circle.fill")
                         }
 
                         // Mental Wellbeing Widget
                         NavigationLink(destination: MentalHealthDetailView(coreDataViewModel: coreDataViewModel)) {
-                            WidgetView(title: "Today's Mental Health", backgroundColor: .purple, icon: "brain.head.profile")
+                            WidgetView(title: "Today's Mental Health", backgroundColor: .cyan, icon: "brain.head.profile")
                         }
 
                         // Custom Goals Widget
                         NavigationLink(destination: CustomGoalsDetailView(coreDataViewModel: coreDataViewModel)) {
-                            WidgetView(title: "Today's Custom Goals", backgroundColor: .cyan, icon: "star.circle.fill")
+                            WidgetView(title: "Today's Custom Goals", backgroundColor: .purple, icon: "star.circle.fill")
                         }
 
                         Spacer()
