@@ -22,6 +22,34 @@ class CoreDataViewModel: ObservableObject {
             }
         }
     }
+    func completeOnboarding() {
+        print("Completing onboarding...") // Debug
+        if let customGoalsEntity = customGoalsEntity {
+            customGoalsEntity.isOnboardingComplete = true
+            saveData()
+            print("Onboarding completed. isOnboardingComplete = \(customGoalsEntity.isOnboardingComplete)") // Debug
+            
+            // Initialize all entities if not already present
+            initializeEntitiesIfNeeded()
+        }
+    }
+
+    func initializeEntitiesIfNeeded() {
+        let context = container.viewContext
+
+        if fitnessEntity == nil {
+            fitnessEntity = FitnessEntity(context: context)
+        }
+        if mentalHealthEntity == nil {
+            mentalHealthEntity = MentalHealthEntity(context: context)
+        }
+        if customGoalsEntity == nil {
+            customGoalsEntity = CustomGoalsEntity(context: context)
+        }
+
+        saveData() // Save changes to Core Data
+    }
+
 
     // MARK: - HealthKit Authorization & Setup
     private func requestHealthKitAuthorization() {
@@ -332,12 +360,7 @@ class CoreDataViewModel: ObservableObject {
 
 
     // MARK: - Onboarding Completion Logic
-    func completeOnboarding() {
-        if let customGoalsEntity = customGoalsEntity {
-            customGoalsEntity.isOnboardingComplete = true
-            saveData()
-        }
-    }
+
 
     func isOnboardingCompleted() -> Bool {
         return customGoalsEntity?.isOnboardingComplete ?? false

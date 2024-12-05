@@ -1,16 +1,11 @@
 import SwiftUI
 
 struct HomeView: View {
-    // Inject the CoreDataViewModel instance as an observed object
     @ObservedObject var coreDataViewModel: CoreDataViewModel
     @Environment(\.verticalSizeClass) var verticalSizeClass // Detect orientation
-    @State private var showMentalHealth = false
-    @State private var showFitness = false
-    @State private var showCustomGoals = false
-
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 // Background image
                 Image("background_image")
@@ -73,6 +68,7 @@ struct HomeView: View {
         }
     }
 }
+
 
 // Reusable widget component
 struct WidgetView: View {

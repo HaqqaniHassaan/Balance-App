@@ -24,7 +24,7 @@ struct CustomGoalsDetailView: View {
 
                     // Radial Progress Widget
                     radialProgressWidget
-                        .frame(width: 250, height: 150)
+                        .frame(width: 150, height: 150)
                         .padding()
                         .shadow(color: .black.opacity(0.4), radius: 1, x: 0, y: 1)
                         .background(Color(UIColor.systemGray6).opacity(0.8))

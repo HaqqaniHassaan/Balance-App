@@ -49,31 +49,12 @@ struct MentalHealthDetailView: View {
 
                 // Goals Overview
                 VStack(spacing: 20) {
-                    // Meditation Goal
+                    // Meditation Goal with Timer
                     if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
-                        GoalRow(
-                            goalTitle: "Meditation",
-                            progress: meditationMinutes,
-                            goal: meditationGoal,
-                            isCompleted: meditationMinutes >= meditationGoal,
-                            isCheckable: true,
-                            currentStreak: meditationCurrentStreak,
-                            longestStreak: meditationLongestStreak
-                        ) { updatedProgress in
-                            meditationMinutes = updatedProgress
-                            coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
-
-                            // Update streaks
-                            coreDataViewModel.updateEntityStreaks(
-                                entity: coreDataViewModel.mentalHealthEntity!,
-                                streakKey: "meditation",
-                                didComplete: meditationMinutes >= meditationGoal
-                            )
-                            loadStreaks()
-                        }
+                        meditationGoalRow
                     }
 
-                    // Fresh Air Goal
+                    // Other Goals
                     if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
                         GoalRow(
                             goalTitle: "Fresh Air",
@@ -97,7 +78,6 @@ struct MentalHealthDetailView: View {
                         }
                     }
 
-                    // Family Calls Goal
                     if coreDataViewModel.mentalHealthEntity?.isFamilyCallTracked == true {
                         GoalRow(
                             goalTitle: "Family Calls",
@@ -121,7 +101,6 @@ struct MentalHealthDetailView: View {
                         }
                     }
 
-                    // Mindful Breathing Goal
                     if coreDataViewModel.mentalHealthEntity?.isMindfulBreathingTracked == true {
                         GoalRow(
                             goalTitle: "Mindful Breathing",
@@ -145,7 +124,6 @@ struct MentalHealthDetailView: View {
                         }
                     }
 
-                    // Screen-Off Time Goal
                     if coreDataViewModel.mentalHealthEntity?.isScreenOffTracked == true {
                         GoalRow(
                             goalTitle: "Screen-Off Time",
@@ -191,8 +169,8 @@ struct MentalHealthDetailView: View {
     }
 
     // MARK: - Progress Summary Widget
-    var progressSummaryWidget: some View {
-        let totalProgress = calculateTotalProgress()
+    private var progressSummaryWidget: some View {
+        let totalProgress = min(calculateTotalProgress(), 1.0) // Cap at 100%
         return VStack(spacing: 5) {
             Text("Overall Progress")
                 .font(.headline)
@@ -216,18 +194,85 @@ struct MentalHealthDetailView: View {
         .shadow(radius: 3)
     }
 
+    // MARK: - Meditation Goal Row with Timer
+    private var meditationGoalRow: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 5) {
+                Text("Daily Meditation")
+                    .font(.headline)
+                    .foregroundColor(.black)
+
+                Text("Meditated: \(meditationMinutes) mins / \(meditationGoal) mins")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+
+                ProgressView(value: Double(meditationMinutes) / Double(meditationGoal))
+                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+            }
+
+            Spacer()
+
+            // Play/Pause Button
+            Button(action: toggleMeditation) {
+                Image(systemName: isMeditationActive ? "pause.circle.fill" : "play.circle.fill")
+                    .foregroundColor(isMeditationActive ? .red : .green)
+                    .font(.title2)
+            }
+        }
+        .padding()
+        .frame(maxWidth: 300, minHeight: 60) // Match the height and width of GoalRow
+        .background(Color(UIColor.systemGray6).opacity(0.8))
+        .cornerRadius(10)
+        .shadow(radius: 3)
+    }
+
+    // MARK: - Timer Functions for Meditation
+    private func toggleMeditation() {
+        if isMeditationActive {
+            stopMeditation()
+        } else {
+            startMeditation()
+        }
+    }
+
+    private func startMeditation() {
+        isMeditationActive = true
+        meditationTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            meditationMinutes += 1
+            coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
+
+            // Stop automatically if the goal is reached
+            if meditationMinutes >= meditationGoal {
+                stopMeditation()
+
+                // Update streaks
+                coreDataViewModel.updateEntityStreaks(
+                    entity: coreDataViewModel.mentalHealthEntity!,
+                    streakKey: "meditation",
+                    didComplete: true
+                )
+                loadStreaks()
+            }
+        }
+    }
+
+    private func stopMeditation() {
+        isMeditationActive = false
+        meditationTimer?.invalidate()
+        meditationTimer = nil
+    }
+
     // MARK: - Calculate Total Progress
-    func calculateTotalProgress() -> Double {
+    private func calculateTotalProgress() -> Double {
         let goals = [
-            (Double(meditationMinutes) / Double(meditationGoal)),
-            (Double(outdoorMinutes) / Double(outdoorGoal)),
-            (Double(familyCallMinutes) / Double(familyCallGoal)),
-            (Double(mindfulBreathingMinutes) / Double(mindfulBreathingGoal)),
-            (Double(screenOffMinutes) / Double(screenOffGoal))
+            Double(meditationMinutes) / Double(meditationGoal),
+            Double(outdoorMinutes) / Double(outdoorGoal),
+            Double(familyCallMinutes) / Double(familyCallGoal),
+            Double(mindfulBreathingMinutes) / Double(mindfulBreathingGoal),
+            Double(screenOffMinutes) / Double(screenOffGoal)
         ]
         let validGoals = goals.filter { $0 > 0 }
-        let averageProgress = validGoals.isEmpty ? 0.0 : validGoals.reduce(0.0, +) / Double(validGoals.count)
-        return min(averageProgress, 1.0)
+        return validGoals.isEmpty ? 0.0 : validGoals.reduce(0.0, +) / Double(validGoals.count)
     }
 
     // MARK: - Load Streaks
