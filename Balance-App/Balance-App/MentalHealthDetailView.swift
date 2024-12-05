@@ -32,6 +32,9 @@ struct MentalHealthDetailView: View {
                     .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
                     .padding(.top)
 
+                // Summary Widget
+                progressSummaryWidget
+
                 // Goals Overview
                 VStack(spacing: 20) {
                     // Daily Meditation Goal Row
@@ -111,8 +114,46 @@ struct MentalHealthDetailView: View {
         }
     }
 
+    // MARK: - Progress Summary Widget
+    private var progressSummaryWidget: some View {
+        let totalProgress = calculateTotalProgress()
+        return VStack(spacing: 5) {
+            Text("Overall Progress")
+                .font(.headline)
+                .foregroundColor(.white)
+                .shadow(color: .black.opacity(0.5), radius: 1, x: 0, y: 1)
+
+            ProgressView(value: totalProgress)
+                .progressViewStyle(LinearProgressViewStyle(tint: .purple))
+                .frame(height: 10)
+                .background(Color(UIColor.systemGray5).opacity(0.8))
+                .cornerRadius(5)
+
+            Text("\(Int(totalProgress * 100))% completed")
+                .font(.caption)
+                .foregroundColor(.white)
+                .shadow(color: .black.opacity(0.5), radius: 1, x: 0, y: 1)
+        }
+        .padding()
+        .background(Color(UIColor.systemGray6).opacity(0.8))
+        .cornerRadius(10)
+        .shadow(radius: 3)
+    }
+
+    // MARK: - Calculate Total Progress
+    private func calculateTotalProgress() -> Double {
+        let goals = [
+            (Double(meditationMinutes) / Double(meditationGoal)),
+            (Double(outdoorMinutes) / Double(outdoorGoal)),
+            (Double(familyCallMinutes) / Double(familyCallGoal)),
+            (Double(mindfulBreathingMinutes) / Double(mindfulBreathingGoal)),
+            (Double(screenOffMinutes) / Double(screenOffGoal))
+        ]
+        let validGoals = goals.filter { $0 > 0 }
+        return validGoals.isEmpty ? 0.0 : validGoals.reduce(0.0, +) / Double(validGoals.count)
+    }
+
     // MARK: - Meditation Goal Row
-    // Meditation Goal Row
     private var meditationGoalRow: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
@@ -143,8 +184,6 @@ struct MentalHealthDetailView: View {
         .cornerRadius(10)
         .shadow(radius: 3)
     }
-
-
 
     // MARK: - Timer Functions
     private func toggleMeditation() {

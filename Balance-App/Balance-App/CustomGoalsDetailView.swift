@@ -18,9 +18,12 @@ struct CustomGoalsDetailView: View {
                 .ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 30) {
                     // Title
                     CustomGoalsTitleView()
+
+                    // Radial Progress Widget
+                    radialProgressWidget
 
                     // Goals Overview
                     GoalsOverviewView(
@@ -60,10 +63,47 @@ struct CustomGoalsDetailView: View {
     }
 
     // MARK: - Helper Functions
-    /// Fetches the custom goals from Core Data and initializes progress tracking
     private func loadCustomGoals() {
         customGoals = coreDataViewModel.fetchCustomGoals()
         goalProgress = Dictionary(uniqueKeysWithValues: customGoals.map { ($0.objectID, Int($0.progress)) })
+    }
+
+    // MARK: - Radial Progress Widget
+    private var radialProgressWidget: some View {
+        let totalProgress = calculateTotalProgress()
+
+        return ZStack {
+            // Background Circle
+            Circle()
+                .stroke(Color(UIColor.systemGray5), lineWidth: 15)
+                .frame(width: 150, height: 150)
+
+            // Progress Circle
+            Circle()
+                .trim(from: 0, to: CGFloat(totalProgress))
+                .stroke(Color.blue, style: StrokeStyle(lineWidth: 15, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .frame(width: 150, height: 150)
+
+            // Center Text
+            VStack {
+                Text("\(Int(totalProgress * 100))%")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(.blue)
+                Text("Completed")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+    }
+
+    private func calculateTotalProgress() -> Double {
+        guard !customGoals.isEmpty else { return 0.0 }
+        let total = customGoals.reduce(0.0) { $0 + (Double(goalProgress[$1.objectID] ?? 0) / Double($1.target)) }
+        return total / Double(customGoals.count)
     }
 }
 
@@ -124,48 +164,6 @@ struct GoalsOverviewView: View {
         .cornerRadius(15)
         .shadow(radius: 5)
         .frame(maxWidth: 350)
-    }
-}
-
-// MARK: - Add Goal View
-struct AddGoalView: View {
-    @ObservedObject var coreDataViewModel: CoreDataViewModel
-    @Environment(\.dismiss) var dismiss
-
-    @State private var goalName = ""
-    @State private var targetValue: String = ""
-    @State private var isCheckable = false
-
-    var onSave: () -> Void
-
-    var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Goal Details")) {
-                    TextField("Goal Name", text: $goalName)
-                        .autocapitalization(.words)
-                    TextField("Target Value", text: $targetValue)
-                        .keyboardType(.numberPad)
-                    Toggle("Checkable Goal", isOn: $isCheckable)
-                }
-            }
-            .navigationBarTitle("Add New Goal", displayMode: .inline)
-            .navigationBarItems(leading: Button("Cancel") {
-                dismiss()
-            }, trailing: Button("Save") {
-                saveGoal()
-            })
-        }
-    }
-
-    private func saveGoal() {
-        guard let target = Int64(targetValue), !goalName.isEmpty else {
-            // Optionally, show an alert if validation fails
-            return
-        }
-        coreDataViewModel.addCustomGoal(name: goalName, target: target, isCheckable: isCheckable)
-        onSave()
-        dismiss()
     }
 }
 

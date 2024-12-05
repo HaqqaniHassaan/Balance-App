@@ -29,6 +29,7 @@ struct Balance_AppApp: App {
     }
 }
 
+
 /**
  In this beta app, my goal was to get the core structures in place, develop the entirety of the UI, and develop the onboarding, goal tracking, goal views, progress view, settings and overall app flow
  The most important and longest implementation was learning and implementing persistent storage to track goal data long term (CoreData)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="23H222" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="CustomGoalsEntity" representedClassName="CustomGoalsEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="dailyProgress" optional="YES" attributeType="Transformable"/>
         <attribute name="isCustomGoalTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isOnboardingComplete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="streaks" optional="YES" attributeType="Transformable"/>
@@ -10,6 +11,7 @@
         <attribute name="caloriesBurned" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="caloriesGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="caloriesStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dailyProgress" optional="YES" attributeType="Transformable"/>
         <attribute name="isCaloriesTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isSleepTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isStepsTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -39,6 +41,11 @@
         <relationship name="customGoalsEntity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CustomGoalsEntity" inverseName="goals" inverseEntity="CustomGoalsEntity"/>
     </entity>
     <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="dailyProgress" optional="YES" attributeType="Transformable">
+            <userInfo>
+                <entry key="date" value="type"/>
+            </userInfo>
+        </attribute>
         <attribute name="familyCallMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isFamilyCallTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isMeditationTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

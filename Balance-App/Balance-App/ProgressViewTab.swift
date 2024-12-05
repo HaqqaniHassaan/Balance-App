@@ -1,138 +1,166 @@
 import SwiftUI
 
 struct ProgressViewTab: View {
-    // Inject the CoreDataViewModel instance as an observed object
     @ObservedObject var coreDataViewModel: CoreDataViewModel
-    @Environment(\.verticalSizeClass) var verticalSizeClass // Detect orientation
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
+    @State private var progressData: [(date: String, physical: Double, mental: Double, custom: Double)] = []
 
     var body: some View {
         NavigationView {
             ZStack {
-                // Background image
+                // Background
                 Image("background_image")
                     .resizable()
                     .scaledToFill()
-                    .frame(minWidth: 0)
                     .ignoresSafeArea()
 
-                // Use different layouts based on orientation
-                VStack {
+                VStack(spacing: 20) {
                     // Title
-                    Text("Your Progress So Far...")
-                        .font(.title)
+                    Text("Your Progress Over the Last 30 Days")
+                        .font(.title2)
                         .foregroundColor(.white)
                         .bold()
                         .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
-                        .padding()
+                        .padding(.top, 20)
 
-                    // Grid layout
-                    if verticalSizeClass == .regular {
-                        // Portrait Mode
-                        progressGrid(columns: 7, circleSize: 40, fontSize: .caption)
-                    } else {
-                        // Landscape Mode
-                        progressGrid(columns: 10, circleSize: 30, fontSize: .caption2)
+                    // Calendar-like Progress Grid wrapped in a container
+                    VStack {
+                        LazyVGrid(
+                            columns: Array(
+                                repeating: GridItem(.flexible()),
+                                count: verticalSizeClass == .regular ? 7 : 10
+                            ),
+                            spacing: 20
+                        ) {
+                            ForEach(progressData, id: \.date) { progress in
+                                VStack(spacing: 8) {
+                                    // Circular Progress View
+                                    CircleProgressView(
+                                        progress1: progress.physical,
+                                        progress2: progress.mental,
+                                        progress3: progress.custom,
+                                        size: 40
+                                    )
+
+                                    // Date label
+                                    Text(shortDate(from: progress.date))
+                                        .font(.caption2)
+                                        .foregroundColor(.white)
+                                        .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
+                                }
+                            }
+                        }
+                        .padding(.top)
                     }
+                    .background(Color(UIColor.systemGray6).opacity(0.8))
+                    .cornerRadius(15)
+                    .padding(.horizontal)
+                    .padding(.bottom, 20)
+                    .shadow(radius: 5)
                 }
-                .background(Color(UIColor.systemGray6).opacity(0.8))
-                .cornerRadius(15)
-                .shadow(radius: 5)
-                .padding()
-
+                // Added padding to the outer VStack to prevent the background from touching the screen edges
+                .padding(.horizontal)
+            }
+            .onAppear {
+                fetchProgressData()
             }
         }
     }
 
-    // MARK: - Grid for Progress Circles
-    @ViewBuilder
-    private func progressGrid(columns: Int, circleSize: CGFloat, fontSize: Font) -> some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: columns), spacing: 10) {
-            ForEach(1...30, id: \.self) { day in
-                ZStack {
-                    // Placeholder progress for physical, mental, and custom goals
-                    let physicalProgress = progressPlaceholder(for: day, type: .physical)
-                    let mentalProgress = progressPlaceholder(for: day, type: .mental)
-                    let customProgress = progressPlaceholder(for: day, type: .custom)
-                    
-                    // Progress Ring
-                    CircleProgressView(
-                        progress1: physicalProgress,
-                        progress2: mentalProgress,
-                        progress3: customProgress,
-                        size: circleSize
-                    )
+    // MARK: - Fetch Progress Data
+    private func fetchProgressData() {
+        let last30Days = generateLast30Days()
+        var tempData: [(date: String, physical: Double, mental: Double, custom: Double)] = []
 
-                    // Day number overlay
-                    Text("\(day)")
-                        .font(fontSize)
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.8), radius: 1, x: 0, y: 1)
-                }
-            }
+        for day in last30Days {
+            let physicalProgress = coreDataViewModel.getDailyProgress(for: day, type: .physical)
+            let mentalProgress = coreDataViewModel.getDailyProgress(for: day, type: .mental)
+            let customProgress = coreDataViewModel.getDailyProgress(for: day, type: .custom)
+
+            tempData.append((date: day, physical: physicalProgress, mental: mentalProgress, custom: customProgress))
         }
-        .padding()
+
+        // Keep dates in ascending order (oldest to newest)
+        progressData = tempData
     }
 
-    // MARK: - Helper Function to Simulate Placeholder Progress
-    private func progressPlaceholder(for day: Int, type: ProgressType) -> Double {
-        // Example logic to simulate different progress for each type
-        switch type {
-        case .physical:
-            return (day % 4 == 0) ? 1.0 : (day % 4 == 1) ? 0.75 : (day % 4 == 2) ? 0.5 : 0.25
-        case .mental:
-            return (day % 3 == 0) ? 1.0 : (day % 3 == 1) ? 0.6 : 0.3
-        case .custom:
-            return (day % 2 == 0) ? 0.8 : 0.4
-        }
+    // MARK: - Date Helpers
+    private func generateLast30Days() -> [String] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+
+        let today = Date()
+        return (0..<30).map { offset in
+            guard let date = Calendar.current.date(byAdding: .day, value: -offset, to: today) else { return "" }
+            return formatter.string(from: date)
+        }.reversed() // Reversed to display from oldest to newest
+    }
+
+    private func shortDate(from fullDate: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let date = formatter.date(from: fullDate) else { return fullDate }
+        formatter.dateFormat = "MMM d"
+        return formatter.string(from: date)
     }
 }
 
 // MARK: - Circular Progress View
 struct CircleProgressView: View {
-    var progress1: Double // Physical
-    var progress2: Double // Mental
-    var progress3: Double // Custom
+    var progress1: Double
+    var progress2: Double
+    var progress3: Double
     var size: CGFloat
 
     var body: some View {
         ZStack {
             // Background circle
             Circle()
-                .stroke(Color.gray.opacity(0.3), lineWidth: 5)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 4)
                 .frame(width: size, height: size)
-            
+
             // Physical Progress (Green)
             Circle()
                 .trim(from: 0, to: CGFloat(progress1))
-                .stroke(Color.green, lineWidth: 5)
+                .stroke(Color.green, lineWidth: 4)
                 .rotationEffect(.degrees(-90))
                 .frame(width: size, height: size)
 
             // Mental Progress (Purple)
             Circle()
                 .trim(from: 0, to: CGFloat(progress2))
-                .stroke(Color.purple, lineWidth: 5)
+                .stroke(Color.purple, lineWidth: 4)
                 .rotationEffect(.degrees(-90))
                 .frame(width: size, height: size)
 
             // Custom Progress (Blue)
             Circle()
                 .trim(from: 0, to: CGFloat(progress3))
-                .stroke(Color.blue, lineWidth: 5)
+                .stroke(Color.blue, lineWidth: 4)
                 .rotationEffect(.degrees(-90))
                 .frame(width: size, height: size)
         }
     }
 }
 
-// MARK: - Progress Type Enum
-enum ProgressType {
-    case physical
-    case mental
-    case custom
-}
-
-// Preview for ProgressViewTab
-#Preview {
-    ProgressViewTab(coreDataViewModel: CoreDataViewModel())
+// MARK: - CoreDataViewModel Extension for Progress Fetching
+extension CoreDataViewModel {
+    func getDailyProgress(for date: String, type: ProgressType) -> Double {
+        switch type {
+        case .physical:
+            if let progress = fitnessEntity?.dailyProgress as? [String: Double] {
+                return progress[date] ?? 0.0
+            }
+        case .mental:
+            if let progress = mentalHealthEntity?.dailyProgress as? [String: Double] {
+                return progress[date] ?? 0.0
+            }
+        case .custom:
+            if let progress = customGoalsEntity?.dailyProgress as? [String: Double] {
+                return progress[date] ?? 0.0
+            }
+        }
+        return 0.0
+    }
 }

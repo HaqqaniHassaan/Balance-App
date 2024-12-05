@@ -365,6 +365,13 @@ class CoreDataViewModel: ObservableObject {
         entity.setValue(streaksDict, forKey: "streaks")
         saveData()
     }
+    // MARK: - Progress Type Enum
+    public enum ProgressType {
+        case physical
+        case mental
+        case custom
+    }
+
 
 
 }
