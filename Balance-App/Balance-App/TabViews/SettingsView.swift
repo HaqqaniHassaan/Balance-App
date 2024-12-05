@@ -8,10 +8,7 @@ struct SettingsView: View {
             
             NavigationView {
                 Form {
-                    Section(header: Text("Profile")) {
-                        NavigationLink("Edit Profile", destination: Text("Edit Profile View")) // Placeholder
-                    }
-                    
+
                     Section(header: Text("Notifications")) {
                         Toggle(isOn: .constant(true)) {
                             Text("Allow Notifications")

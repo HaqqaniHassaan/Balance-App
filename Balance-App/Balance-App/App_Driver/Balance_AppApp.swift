@@ -31,7 +31,10 @@ struct Balance_AppApp: App {
 
 
 /**
- In this beta app, my goal was to get the core structures in place, develop the entirety of the UI, and develop the onboarding, goal tracking, goal views, progress view, settings and overall app flow
+ Final app patch notes: Added timed exercises for meditation, stretches, updated colors per discussion with professor in prior class (to be more in line with Apple's health scheme), added backgrounds for
+ better contrast, many UI tweaks, functional revamps, (progressview implementation, streaks implementation). Organized/added project structure into folders for different categories (components, coredata etc)
+ 
+ 
  The most important and longest implementation was learning and implementing persistent storage to track goal data long term (CoreData)
  Fitness Goals and DetailView (and the whole flow from onboarding to fitnessdetailview) is functionally complete. I prioritized this becausee unless the other two goals (Mental health and custom) fitness
  goals require both HealthKit and CoreData implementation. I implemented our CoreData using the MVVC model (which utilizes the CoreDataViewModel to serve as an intermediary between our CoreData and SwiftUI views

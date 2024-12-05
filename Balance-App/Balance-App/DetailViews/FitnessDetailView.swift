@@ -11,6 +11,8 @@ struct FitnessDetailView: View {
     @State private var stretchingMinutes: Int = 0
     @State private var waterCurrentStreak: Int = 0
     @State private var waterLongestStreak: Int = 0
+    @State private var isStretchingActive = false
+    @State private var stretchingTimer: Timer?
 
     // Goals
     private let calorieGoal = 2000 // Calories
@@ -158,20 +160,68 @@ struct FitnessDetailView: View {
             }
 
             // Stretching Goal
+            // Stretching Goal Row with Timer
             if coreDataViewModel.fitnessEntity?.isStretchingTracked == true {
-                GoalRow(
-                    goalTitle: "Stretching",
-                    progress: stretchingMinutes,
-                    goal: stretchingGoal,
-                    isCompleted: stretchingMinutes >= stretchingGoal,
-                    isCheckable: false
-                ) { updatedProgress in
-                    stretchingMinutes = updatedProgress
-                    coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
+                HStack {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Daily Stretching")
+                            .font(.headline)
+                            .foregroundColor(.black)
+
+                        Text("Stretched: \(stretchingMinutes) mins")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+
+                        ProgressView(value: Double(stretchingMinutes) / Double(stretchingGoal))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+                    }
+
+                    Spacer()
+
+                    // Play/Pause Button
+                    Button(action: toggleStretching) {
+                        Image(systemName: isStretchingActive ? "pause.circle.fill" : "play.circle.fill")
+                            .foregroundColor(isStretchingActive ? .red : .green)
+                            .font(.title2)
+                    }
                 }
+                .padding()
+                .frame(maxWidth: 300, minHeight: 60)
+                .background(Color(UIColor.systemGray6).opacity(0.8))
+                .cornerRadius(10)
+                .shadow(radius: 3)
+            }
+
+        }
+    }
+    // MARK: - Timer Functions
+    private func toggleStretching() {
+        if isStretchingActive {
+            stopStretching()
+        } else {
+            startStretching()
+        }
+    }
+
+    private func startStretching() {
+        isStretchingActive = true
+        stretchingTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            stretchingMinutes += 1
+            coreDataViewModel.updateStretchingMinutes(stretchingMinutes)
+
+            // Stop automatically if the goal is reached
+            if stretchingMinutes >= stretchingGoal {
+                stopStretching()
             }
         }
     }
+
+    private func stopStretching() {
+        isStretchingActive = false
+        stretchingTimer?.invalidate()
+        stretchingTimer = nil
+    }
+
 
     // MARK: - Load Streaks
     private func loadStreaks() {

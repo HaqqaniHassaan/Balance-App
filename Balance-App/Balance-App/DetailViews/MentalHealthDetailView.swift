@@ -4,22 +4,22 @@ struct MentalHealthDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
 
     // State variables for progress tracking
-    @State private var meditationMinutes = 0
-    @State private var outdoorMinutes = 0
-    @State private var familyCallMinutes = 0
-    @State private var mindfulBreathingMinutes = 0
-    @State private var screenOffMinutes = 0
+    @State   var meditationMinutes = 0
+    @State   var outdoorMinutes = 0
+    @State   var familyCallMinutes = 0
+    @State   var mindfulBreathingMinutes = 0
+    @State   var screenOffMinutes = 0
 
     // Timer-related states for meditation
-    @State private var isMeditationActive = false
-    @State private var meditationTimer: Timer?
+    @State   var isMeditationActive = false
+    @State   var meditationTimer: Timer?
 
     // Goals for each tracked metric
-    private let meditationGoal = 60
-    private let outdoorGoal = 60
-    private let familyCallGoal = 30
-    private let mindfulBreathingGoal = 20
-    private let screenOffGoal = 90
+      let meditationGoal = 60
+      let outdoorGoal = 60
+      let familyCallGoal = 30
+      let mindfulBreathingGoal = 20
+      let screenOffGoal = 90
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -52,7 +52,10 @@ struct MentalHealthDetailView: View {
                             isCheckable: true
                         ) { updatedProgress in
                             outdoorMinutes = updatedProgress
-                            coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
+                            DispatchQueue.main.async {
+                                outdoorMinutes = updatedProgress
+                                coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
+                            }
                         }
                     }
 
@@ -110,12 +113,15 @@ struct MentalHealthDetailView: View {
                 .ignoresSafeArea()
         )
         .onAppear {
+            
             loadSavedData()
         }
+        .navigationBarBackButtonHidden(false) // Ensure back button is shown
+
     }
 
     // MARK: - Progress Summary Widget
-    private var progressSummaryWidget: some View {
+   var progressSummaryWidget: some View {
         let totalProgress = calculateTotalProgress()
         return VStack(spacing: 5) {
             Text("Overall Progress")
@@ -141,7 +147,7 @@ struct MentalHealthDetailView: View {
     }
 
     // MARK: - Calculate Total Progress
-    private func calculateTotalProgress() -> Double {
+    func calculateTotalProgress() -> Double {
         let goals = [
             (Double(meditationMinutes) / Double(meditationGoal)),
             (Double(outdoorMinutes) / Double(outdoorGoal)),
@@ -150,11 +156,13 @@ struct MentalHealthDetailView: View {
             (Double(screenOffMinutes) / Double(screenOffGoal))
         ]
         let validGoals = goals.filter { $0 > 0 }
-        return validGoals.isEmpty ? 0.0 : validGoals.reduce(0.0, +) / Double(validGoals.count)
+        let averageProgress = validGoals.isEmpty ? 0.0 : validGoals.reduce(0.0, +) / Double(validGoals.count)
+        return min(averageProgress, 1.0)
     }
 
+
     // MARK: - Meditation Goal Row
-    private var meditationGoalRow: some View {
+     var meditationGoalRow: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
                 Text("Daily Meditation")
@@ -186,7 +194,7 @@ struct MentalHealthDetailView: View {
     }
 
     // MARK: - Timer Functions
-    private func toggleMeditation() {
+      func toggleMeditation() {
         if isMeditationActive {
             stopMeditation()
         } else {
@@ -194,7 +202,7 @@ struct MentalHealthDetailView: View {
         }
     }
 
-    private func startMeditation() {
+      func startMeditation() {
         isMeditationActive = true
         meditationTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
             meditationMinutes += 1
@@ -207,14 +215,14 @@ struct MentalHealthDetailView: View {
         }
     }
 
-    private func stopMeditation() {
+      func stopMeditation() {
         isMeditationActive = false
         meditationTimer?.invalidate()
         meditationTimer = nil
     }
 
     // MARK: - Load Saved Data
-    private func loadSavedData() {
+      func loadSavedData() {
         if let savedMeditationMinutes = coreDataViewModel.mentalHealthEntity?.meditationMinutes {
             meditationMinutes = Int(savedMeditationMinutes)
         }
