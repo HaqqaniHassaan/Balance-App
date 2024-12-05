@@ -82,9 +82,7 @@ struct GoalRow: View {
         .onAppear {
             isChecked = isCompleted
         }
-        
     }
-    
 
     // MARK: - Functions
 

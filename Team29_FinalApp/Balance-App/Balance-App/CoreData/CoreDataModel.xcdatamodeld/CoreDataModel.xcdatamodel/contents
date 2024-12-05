@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="23H222" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="CustomGoalsEntity" representedClassName="CustomGoalsEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="dailyProgress" optional="YES" attributeType="Transformable"/>
+        <attribute name="isCustomGoalTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isOnboardingComplete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="streaks" optional="YES" attributeType="Transformable"/>
+        <relationship name="goals" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Goal" inverseName="customGoalsEntity" inverseEntity="Goal"/>
+    </entity>
+    <entity name="FitnessEntity" representedClassName="FitnessEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="caloriesBurned" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="caloriesGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="caloriesStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dailyProgress" optional="YES" attributeType="Transformable"/>
+        <attribute name="isCaloriesTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isSleepTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isStepsTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isStretchingGoalCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isStretchingTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWaterGoalCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWaterTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWorkoutTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="minutesStretched" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sleepMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stepsGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stepsStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stepsWalked" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="streaks" optional="YES" attributeType="Transformable"/>
+        <attribute name="stretchingMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stretchingStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterIntake" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="waterStreak" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="workoutDuration" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="Goal" representedClassName="Goal" syncable="YES" codeGenerationType="class">
+        <attribute name="isCheckable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="progress" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="target" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="customGoalsEntity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CustomGoalsEntity" inverseName="goals" inverseEntity="CustomGoalsEntity"/>
+    </entity>
+    <entity name="MentalHealthEntity" representedClassName="MentalHealthEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="dailyProgress" optional="YES" attributeType="Transformable">
+            <userInfo>
+                <entry key="date" value="type"/>
+            </userInfo>
+        </attribute>
+        <attribute name="familyCallMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isFamilyCallTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isMeditationTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isMindfulBreathingTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isOutdoorTimeTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isScreenOffTracked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="meditationGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="meditationMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="mindfulBreathingMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="outdoorGoal" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="outdoorMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="screenOffMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="streaks" optional="YES" attributeType="Transformable"/>
+    </entity>
+</model>

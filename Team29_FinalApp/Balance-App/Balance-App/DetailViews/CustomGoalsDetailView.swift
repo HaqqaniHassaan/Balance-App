@@ -106,7 +106,7 @@ struct CustomGoalsDetailView: View {
         .frame(maxWidth: .infinity)
     }
 
-     public func calculateTotalProgress() -> Double {
+    private func calculateTotalProgress() -> Double {
         guard !customGoals.isEmpty else { return 0.0 }
         let total = customGoals.reduce(0.0) { $0 + (Double(goalProgress[$1.objectID] ?? 0) / Double($1.target)) }
         return total / Double(customGoals.count)

@@ -4,34 +4,22 @@ struct MentalHealthDetailView: View {
     @ObservedObject var coreDataViewModel: CoreDataViewModel
 
     // State variables for progress tracking
-    @State var meditationMinutes = 0
-    @State var outdoorMinutes = 0
-    @State var familyCallMinutes = 0
-    @State var mindfulBreathingMinutes = 0
-    @State var screenOffMinutes = 0
-
-    // State variables for streaks
-    @State var meditationCurrentStreak = 0
-    @State var meditationLongestStreak = 0
-    @State var outdoorCurrentStreak = 0
-    @State var outdoorLongestStreak = 0
-    @State var familyCallCurrentStreak = 0
-    @State var familyCallLongestStreak = 0
-    @State var mindfulBreathingCurrentStreak = 0
-    @State var mindfulBreathingLongestStreak = 0
-    @State var screenOffCurrentStreak = 0
-    @State var screenOffLongestStreak = 0
+    @State   var meditationMinutes = 0
+    @State   var outdoorMinutes = 0
+    @State   var familyCallMinutes = 0
+    @State   var mindfulBreathingMinutes = 0
+    @State   var screenOffMinutes = 0
 
     // Timer-related states for meditation
-    @State var isMeditationActive = false
-    @State var meditationTimer: Timer?
+    @State   var isMeditationActive = false
+    @State   var meditationTimer: Timer?
 
     // Goals for each tracked metric
-    let meditationGoal = 60
-    let outdoorGoal = 60
-    let familyCallGoal = 30
-    let mindfulBreathingGoal = 20
-    let screenOffGoal = 90
+      let meditationGoal = 60
+      let outdoorGoal = 60
+      let familyCallGoal = 30
+      let mindfulBreathingGoal = 20
+      let screenOffGoal = 90
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -49,123 +37,64 @@ struct MentalHealthDetailView: View {
 
                 // Goals Overview
                 VStack(spacing: 20) {
-                    // Meditation Goal
+                    // Daily Meditation Goal Row
                     if coreDataViewModel.mentalHealthEntity?.isMeditationTracked == true {
-                        GoalRow(
-                            goalTitle: "Meditation",
-                            progress: meditationMinutes,
-                            goal: meditationGoal,
-                            isCompleted: meditationMinutes >= meditationGoal,
-                            isCheckable: true,
-                            currentStreak: meditationCurrentStreak,
-                            longestStreak: meditationLongestStreak
-                        ) { updatedProgress in
-                            meditationMinutes = updatedProgress
-                            coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
-
-                            // Update streaks
-                            coreDataViewModel.updateEntityStreaks(
-                                entity: coreDataViewModel.mentalHealthEntity!,
-                                streakKey: "meditation",
-                                didComplete: meditationMinutes >= meditationGoal
-                            )
-                            loadStreaks()
-                        }
+                        meditationGoalRow
                     }
 
-                    // Fresh Air Goal
+                    // Other Goals
                     if coreDataViewModel.mentalHealthEntity?.isOutdoorTimeTracked == true {
                         GoalRow(
                             goalTitle: "Fresh Air",
                             progress: outdoorMinutes,
                             goal: outdoorGoal,
                             isCompleted: outdoorMinutes >= outdoorGoal,
-                            isCheckable: true,
-                            currentStreak: outdoorCurrentStreak,
-                            longestStreak: outdoorLongestStreak
+                            isCheckable: true
                         ) { updatedProgress in
                             outdoorMinutes = updatedProgress
-                            coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
-
-                            // Update streaks
-                            coreDataViewModel.updateEntityStreaks(
-                                entity: coreDataViewModel.mentalHealthEntity!,
-                                streakKey: "outdoorTime",
-                                didComplete: outdoorMinutes >= outdoorGoal
-                            )
-                            loadStreaks()
+                            DispatchQueue.main.async {
+                                outdoorMinutes = updatedProgress
+                                coreDataViewModel.updateMentalHealthMetric(for: \.outdoorMinutes, value: Int64(outdoorMinutes))
+                            }
                         }
                     }
 
-                    // Family Calls Goal
                     if coreDataViewModel.mentalHealthEntity?.isFamilyCallTracked == true {
                         GoalRow(
                             goalTitle: "Family Calls",
                             progress: familyCallMinutes,
                             goal: familyCallGoal,
                             isCompleted: familyCallMinutes >= familyCallGoal,
-                            isCheckable: true,
-                            currentStreak: familyCallCurrentStreak,
-                            longestStreak: familyCallLongestStreak
+                            isCheckable: true
                         ) { updatedProgress in
                             familyCallMinutes = updatedProgress
                             coreDataViewModel.updateMentalHealthMetric(for: \.familyCallMinutes, value: Int64(familyCallMinutes))
-
-                            // Update streaks
-                            coreDataViewModel.updateEntityStreaks(
-                                entity: coreDataViewModel.mentalHealthEntity!,
-                                streakKey: "familyCalls",
-                                didComplete: familyCallMinutes >= familyCallGoal
-                            )
-                            loadStreaks()
                         }
                     }
 
-                    // Mindful Breathing Goal
                     if coreDataViewModel.mentalHealthEntity?.isMindfulBreathingTracked == true {
                         GoalRow(
                             goalTitle: "Mindful Breathing",
                             progress: mindfulBreathingMinutes,
                             goal: mindfulBreathingGoal,
                             isCompleted: mindfulBreathingMinutes >= mindfulBreathingGoal,
-                            isCheckable: true,
-                            currentStreak: mindfulBreathingCurrentStreak,
-                            longestStreak: mindfulBreathingLongestStreak
+                            isCheckable: true
                         ) { updatedProgress in
                             mindfulBreathingMinutes = updatedProgress
                             coreDataViewModel.updateMentalHealthMetric(for: \.mindfulBreathingMinutes, value: Int64(mindfulBreathingMinutes))
-
-                            // Update streaks
-                            coreDataViewModel.updateEntityStreaks(
-                                entity: coreDataViewModel.mentalHealthEntity!,
-                                streakKey: "mindfulBreathing",
-                                didComplete: mindfulBreathingMinutes >= mindfulBreathingGoal
-                            )
-                            loadStreaks()
                         }
                     }
 
-                    // Screen-Off Time Goal
                     if coreDataViewModel.mentalHealthEntity?.isScreenOffTracked == true {
                         GoalRow(
                             goalTitle: "Screen-Off Time",
                             progress: screenOffMinutes,
                             goal: screenOffGoal,
                             isCompleted: screenOffMinutes >= screenOffGoal,
-                            isCheckable: true,
-                            currentStreak: screenOffCurrentStreak,
-                            longestStreak: screenOffLongestStreak
+                            isCheckable: true
                         ) { updatedProgress in
                             screenOffMinutes = updatedProgress
                             coreDataViewModel.updateMentalHealthMetric(for: \.screenOffMinutes, value: Int64(screenOffMinutes))
-
-                            // Update streaks
-                            coreDataViewModel.updateEntityStreaks(
-                                entity: coreDataViewModel.mentalHealthEntity!,
-                                streakKey: "screenOff",
-                                didComplete: screenOffMinutes >= screenOffGoal
-                            )
-                            loadStreaks()
                         }
                     }
                 }
@@ -184,14 +113,15 @@ struct MentalHealthDetailView: View {
                 .ignoresSafeArea()
         )
         .onAppear {
+            
             loadSavedData()
-            loadStreaks()
         }
-        .navigationBarBackButtonHidden(false)
+        .navigationBarBackButtonHidden(false) // Ensure back button is shown
+
     }
 
     // MARK: - Progress Summary Widget
-    var progressSummaryWidget: some View {
+   var progressSummaryWidget: some View {
         let totalProgress = calculateTotalProgress()
         return VStack(spacing: 5) {
             Text("Overall Progress")
@@ -230,32 +160,69 @@ struct MentalHealthDetailView: View {
         return min(averageProgress, 1.0)
     }
 
-    // MARK: - Load Streaks
-    private func loadStreaks() {
-        if let streaks = coreDataViewModel.fetchStreaks(forEntity: .mentalHealth, streakKey: "meditation") {
-            meditationCurrentStreak = streaks.current
-            meditationLongestStreak = streaks.longest
+
+    // MARK: - Meditation Goal Row
+     var meditationGoalRow: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 5) {
+                Text("Daily Meditation")
+                    .font(.headline)
+                    .foregroundColor(.black)
+
+                Text("Meditated: \(meditationMinutes) mins")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+
+                ProgressView(value: Double(meditationMinutes) / Double(meditationGoal))
+                    .progressViewStyle(LinearProgressViewStyle(tint: .orange))
+            }
+
+            Spacer()
+
+            // Play/Pause Button
+            Button(action: toggleMeditation) {
+                Image(systemName: isMeditationActive ? "pause.circle.fill" : "play.circle.fill")
+                    .foregroundColor(isMeditationActive ? .red : .green)
+                    .font(.title2)
+            }
         }
-        if let streaks = coreDataViewModel.fetchStreaks(forEntity: .mentalHealth, streakKey: "outdoorTime") {
-            outdoorCurrentStreak = streaks.current
-            outdoorLongestStreak = streaks.longest
-        }
-        if let streaks = coreDataViewModel.fetchStreaks(forEntity: .mentalHealth, streakKey: "familyCalls") {
-            familyCallCurrentStreak = streaks.current
-            familyCallLongestStreak = streaks.longest
-        }
-        if let streaks = coreDataViewModel.fetchStreaks(forEntity: .mentalHealth, streakKey: "mindfulBreathing") {
-            mindfulBreathingCurrentStreak = streaks.current
-            mindfulBreathingLongestStreak = streaks.longest
-        }
-        if let streaks = coreDataViewModel.fetchStreaks(forEntity: .mentalHealth, streakKey: "screenOff") {
-            screenOffCurrentStreak = streaks.current
-            screenOffLongestStreak = streaks.longest
+        .padding()
+        .frame(maxWidth: 300, minHeight: 60) // Match the height and width of GoalRow
+        .background(Color(UIColor.systemGray6).opacity(0.8))
+        .cornerRadius(10)
+        .shadow(radius: 3)
+    }
+
+    // MARK: - Timer Functions
+      func toggleMeditation() {
+        if isMeditationActive {
+            stopMeditation()
+        } else {
+            startMeditation()
         }
     }
 
+      func startMeditation() {
+        isMeditationActive = true
+        meditationTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            meditationMinutes += 1
+            coreDataViewModel.updateMentalHealthMetric(for: \.meditationMinutes, value: Int64(meditationMinutes))
+
+            // Stop automatically if the goal is reached
+            if meditationMinutes >= meditationGoal {
+                stopMeditation()
+            }
+        }
+    }
+
+      func stopMeditation() {
+        isMeditationActive = false
+        meditationTimer?.invalidate()
+        meditationTimer = nil
+    }
+
     // MARK: - Load Saved Data
-    private func loadSavedData() {
+      func loadSavedData() {
         if let savedMeditationMinutes = coreDataViewModel.mentalHealthEntity?.meditationMinutes {
             meditationMinutes = Int(savedMeditationMinutes)
         }
