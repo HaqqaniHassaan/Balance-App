@@ -2,7 +2,7 @@
   <img src="https://i.imgur.com/Ahyhyr4.png" width="120" height="120" alt="App Icon"/>
 </p>
 
-**(Team29 - HassaanHaqqani, single member for submission to local CodeWizardia contest)
+**(Team29 - HassaanHaqqani, single member group submission to local CodeWizardia contest)
 **
 # Balance: Your All-In-One Lifestyle App
 
