@@ -2,7 +2,6 @@
   <img src="https://i.imgur.com/Ahyhyr4.png" width="120" height="120" alt="App Icon"/>
 </p>
 
-**
 # Balance: Your All-In-One Lifestyle App
 
 
