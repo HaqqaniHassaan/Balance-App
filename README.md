@@ -52,16 +52,15 @@ Balance’s design was meticulously planned using **wireframes and mockups** cre
 - **Home and Progress Views**: The Home View serves as a dashboard for daily goals, while the Progress View provides a visual calendar representation of progress, using color-coded indicators for different goal categories.
 - **Goal Tracking**: Utilizes HealthKit data to automatically update physical health metrics, with Core Data handling the local storage of progress.
 
-## Technologies
+## Technologies / Design
 
 - **SwiftUI**: Used for building the UI, with support for both portrait and landscape orientations.
 - **Core Data**: Ensures data persistence for goal-tracking selections and user progress.
 - **Figma**: Employed during the design phase to create mockups and wireframes, ensuring that development aligns closely with the intended user experience.
-  (Relevant Figma UI/UX/Wireframing including full prototype):
-    -**Prototype**: https://www.figma.com/design/kfZ97nWlLZgU0Q2B7ScohK/prototype?node-id=0-1&t=IzUsHvSufRiRrte4-1
-    -**Wireframe**: https://www.figma.com/design/8KHxGnXHC8eh2hgkL6HXyk/wireframe?t=IzUsHvSufRiRrte4-1
+- **Figma Prototype**: https://www.figma.com/design/kfZ97nWlLZgU0Q2B7ScohK/prototype?node-id=0-1&t=IzUsHvSufRiRrte4-1
+- **Figma Wireframe/Mockup**: https://www.figma.com/design/8KHxGnXHC8eh2hgkL6HXyk/wireframe?t=IzUsHvSufRiRrte4-1
 - **HealthKit**: Syncs and fetches data directly from the HealthKit API for physical activity metrics.
-
+  
    <img src="https://i.imgur.com/gvPH5M8.png" width="200" alt="HealthKit"/>
 
 
